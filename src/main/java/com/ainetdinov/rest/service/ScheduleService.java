@@ -3,10 +3,12 @@ package com.ainetdinov.rest.service;
 import com.ainetdinov.rest.model.Group;
 import com.ainetdinov.rest.model.Schedule;
 import com.ainetdinov.rest.model.Teacher;
+import lombok.Getter;
 
 import java.util.List;
 import java.util.Objects;
 
+@Getter
 public class ScheduleService extends EntityService<Schedule> {
     private final TeacherService teacherService;
     private final GroupService groupService;
