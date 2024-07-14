@@ -19,14 +19,14 @@ public class GroupService extends EntityService<Group> {
 
     @Override
     public List<Group> getEntities() {
-        synchronized (this) {
-            entities.forEach(group -> {
-                if (!validateStudents(group.getStudents(), true)) {
-                    group.getStudents().removeIf(student -> !studentService.getEntities().contains(student));
-                }
-            });
-        }
+        syncGroupStudents();
         return entities;
+    }
+
+    @Override
+    public Group getEntity(Predicate<Group> filter) {
+        syncGroupStudents();
+        return super.getEntity(filter);
     }
 
     public boolean addGroup(Group group) {
@@ -56,6 +56,16 @@ public class GroupService extends EntityService<Group> {
                     .stream()
                     .anyMatch(student -> student.getName().equals(name) && student.getSurname().equals(surname));
             return getEntity(isFound);
+        }
+    }
+
+    private void syncGroupStudents() {
+        synchronized (this) {
+            entities.forEach(group -> {
+                if (!validateStudents(group.getStudents(), true)) {
+                    group.getStudents().removeIf(student -> !studentService.getEntities().contains(student));
+                }
+            });
         }
     }
 

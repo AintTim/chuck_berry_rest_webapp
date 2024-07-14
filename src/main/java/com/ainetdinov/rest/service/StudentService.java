@@ -1,10 +1,13 @@
 package com.ainetdinov.rest.service;
 
 import com.ainetdinov.rest.model.Student;
+import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Objects;
 
+@Log4j2
 public class StudentService extends EntityService<Student> {
 
     public StudentService(List<Student> students, ValidatorService<Student> validator) {
@@ -26,6 +29,7 @@ public class StudentService extends EntityService<Student> {
 
     public boolean addStudent(Student student) {
         synchronized (entities) {
+            log.info("Entity validation {}", student);
             if (validateEntity(student, validator::validate, this::isUnique)) {
                 entities.add(student);
                 return true;
