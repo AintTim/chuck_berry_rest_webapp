@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+@Log4j2
 public class ParsingService {
     private final ObjectMapper mapper;
 
@@ -45,15 +47,18 @@ public class ParsingService {
             if (isValidJson(jsonBody)) {
                 return mapper.readValue(jsonBody, typeReference);
             } else {
+                log.warn("Invalid json body");
                 return null;
             }
         } catch (IOException e) {
+            log.error(String.format("Error parsing json %s", jsonBody), e);
             return null;
         }
     }
 
     private boolean isValidJson(String jsonBody) {
         ObjectMapper validator = new ObjectMapper().enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
+        log.debug("Validating json body: {}", jsonBody);
         try {
             validator.readTree(jsonBody);
         } catch (JacksonException e) {

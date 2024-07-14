@@ -3,11 +3,14 @@ package com.ainetdinov.rest.service;
 import com.ainetdinov.rest.model.Group;
 import com.ainetdinov.rest.model.Student;
 import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 
+@Log4j2
 @Getter
 public class GroupService extends EntityService<Group> {
     private final StudentService studentService;
@@ -31,9 +34,11 @@ public class GroupService extends EntityService<Group> {
 
     public boolean addGroup(Group group) {
         synchronized (entities) {
+            log.info("Group {}: validation before add\n{}",group.getNumber(), group);
             if (validateEntity(group, validator::validate, this::isUnique)
                     && validateStudents(group.getStudents(), false)) {
                 entities.add(group);
+                log.info("Group {}: added", group.getId());
                 return true;
             } else {
                 return false;
@@ -42,10 +47,12 @@ public class GroupService extends EntityService<Group> {
     }
 
     public void addStudentsToGroup(List<Student> students, int groupId) {
+        log.info("Looking for group with group id {}", groupId);
         Group group = getEntity(g -> g.getId() == groupId);
         synchronized (entities) {
-            if (validateStudents(students, false)) {
+            if (Objects.nonNull(group) && validateStudents(students, false)) {
                 group.getStudents().addAll(students);
+                log.info("Students have been added to group {}\n{}", group.getNumber(), group.getStudents());
             }
         }
     }
@@ -55,6 +62,7 @@ public class GroupService extends EntityService<Group> {
             Predicate<Group> isFound = group -> group.getStudents()
                     .stream()
                     .anyMatch(student -> student.getName().equals(name) && student.getSurname().equals(surname));
+            log.debug("Looking for student {} {}", name, surname);
             return getEntity(isFound);
         }
     }
@@ -63,6 +71,7 @@ public class GroupService extends EntityService<Group> {
         synchronized (this) {
             entities.forEach(group -> {
                 if (!validateStudents(group.getStudents(), true)) {
+                    log.debug("Group {}: outdated data", group.getNumber());
                     group.getStudents().removeIf(student -> !studentService.getEntities().contains(student));
                 }
             });
@@ -72,11 +81,13 @@ public class GroupService extends EntityService<Group> {
     private boolean validateStudents(List<Student> students, boolean currentStudents) {
         boolean isPresent = new HashSet<>(studentService.getEntities()).containsAll(students);
         if (currentStudents) {
+            log.info("Checking students presence within database");
             return isPresent;
         } else {
             boolean isRelatedToGroup = entities.stream()
                     .flatMap(g -> g.getStudents().stream())
                     .anyMatch(students::contains);
+            log.info("Checking students presence within database and existing groups relation absence");
             return isPresent && !isRelatedToGroup;
         }
     }

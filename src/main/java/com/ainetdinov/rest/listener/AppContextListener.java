@@ -14,6 +14,7 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -22,6 +23,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Properties;
 
+@Log4j2
 @WebListener
 public class AppContextListener implements ServletContextListener {
     private static final String PROPERTIES_PATH = "/WEB-INF/resources/settings.properties";
@@ -51,6 +53,7 @@ public class AppContextListener implements ServletContextListener {
 
     private void initProperties() {
         try {
+            log.debug("Initializing properties file");
             properties.load(context.getResourceAsStream(PROPERTIES_PATH));
         } catch (IOException e) {
             throw new IllegalStateException(String.format("Error reading properties file: %s", PROPERTIES_PATH), e);
@@ -66,6 +69,7 @@ public class AppContextListener implements ServletContextListener {
     }
 
     private <T> List<T> initEntities(String path, Class<T> clazz) {
+        log.debug("Initializing {} entities", clazz.getSimpleName());
         return parsingService.parseList(getResourcePath(path), clazz);
     }
 }

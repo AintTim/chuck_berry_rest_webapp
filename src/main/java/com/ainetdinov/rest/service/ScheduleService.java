@@ -4,10 +4,12 @@ import com.ainetdinov.rest.model.Group;
 import com.ainetdinov.rest.model.Schedule;
 import com.ainetdinov.rest.model.Teacher;
 import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.List;
 import java.util.Objects;
 
+@Log4j2
 @Getter
 public class ScheduleService extends EntityService<Schedule> {
     private final TeacherService teacherService;
@@ -21,8 +23,11 @@ public class ScheduleService extends EntityService<Schedule> {
 
     public Schedule updateSchedule(Schedule current, Schedule updated) {
         synchronized (entities) {
+            //TODO add UUID
+            log.info("Schedule: validation before update\ncurrent: {}\nupdated: {}", current, updated);
             if (validateScheduleUpdate(current, updated)) {
                 entities.set(entities.indexOf(current), updated);
+                log.info("Schedule: updated");
                 return updated;
             } else {
                 return null;
@@ -32,8 +37,10 @@ public class ScheduleService extends EntityService<Schedule> {
 
     public boolean addSchedule(Schedule schedule) {
         synchronized (this) {
+            log.info("Schedule: validation before add\n{}", schedule);
             if (validateEntity(schedule, validator::validate, this::isUnique, this::validateTeacherAndGroupPresence)) {
                 entities.add(schedule);
+                log.info("Schedule: added");
                 return true;
             } else {
                 return false;
