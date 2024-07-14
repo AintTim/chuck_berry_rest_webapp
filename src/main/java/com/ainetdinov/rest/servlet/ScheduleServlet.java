@@ -9,6 +9,7 @@ import com.ainetdinov.rest.model.Teacher;
 import com.ainetdinov.rest.service.HttpService;
 import com.ainetdinov.rest.service.ParsingService;
 import com.ainetdinov.rest.service.ScheduleService;
+import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.annotation.WebServlet;
@@ -63,7 +64,7 @@ public class ScheduleServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
-        Schedule schedule = parsingService.parse(httpService.getRequestBody(req));
+        Schedule schedule = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
         if (scheduleService.addSchedule(schedule)) {
             resp.setStatus(HttpServletResponse.SC_CREATED);
         } else {
@@ -74,7 +75,7 @@ public class ScheduleServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
-        ScheduleDTO scheduleDTO = parsingService.parse(httpService.getRequestBody(req));
+        ScheduleDTO scheduleDTO = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
         if (Objects.nonNull(scheduleDTO)) {
             Schedule updatedSchedule = scheduleService.updateSchedule(scheduleDTO.getCurrent(), scheduleDTO.getUpdated());
             if (Objects.nonNull(updatedSchedule)) {

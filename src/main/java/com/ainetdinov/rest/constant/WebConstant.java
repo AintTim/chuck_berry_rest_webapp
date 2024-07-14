@@ -21,7 +21,7 @@ public class WebConstant {
     public static final String SCHEDULE_DATE = "date";
 
     public static final String STUDENTS_PATH = "students.path";
-    public static final String TEACHERS_PATH = "teacher.path";
+    public static final String TEACHERS_PATH = "teachers.path";
     public static final String GROUPS_PATH = "groups.path";
     public static final String SCHEDULES_PATH = "schedules.path";
 }

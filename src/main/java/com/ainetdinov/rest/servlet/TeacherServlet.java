@@ -6,6 +6,7 @@ import com.ainetdinov.rest.model.Teacher;
 import com.ainetdinov.rest.service.HttpService;
 import com.ainetdinov.rest.service.ParsingService;
 import com.ainetdinov.rest.service.TeacherService;
+import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.annotation.WebServlet;
@@ -45,7 +46,7 @@ public class TeacherServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
-        Teacher teacher = parsingService.parse(httpService.getRequestBody(req));
+        Teacher teacher = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
         if (teacherService.addTeacher(teacher)) {
             resp.setStatus(HttpServletResponse.SC_OK);
         } else {

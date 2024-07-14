@@ -5,6 +5,7 @@ import com.ainetdinov.rest.model.Student;
 import com.ainetdinov.rest.service.HttpService;
 import com.ainetdinov.rest.service.ParsingService;
 import com.ainetdinov.rest.service.StudentService;
+import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.annotation.WebServlet;
@@ -48,7 +49,7 @@ public class StudentServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
-        Student student = parsingService.parse(httpService.getRequestBody(req));
+        Student student = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
         if (studentService.addStudent(student)) {
             resp.setStatus(HttpServletResponse.SC_CREATED);
         } else {
@@ -74,7 +75,7 @@ public class StudentServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
         if (httpService.containsPath(req)) {
-            Student student = parsingService.parse(httpService.getRequestBody(req));
+            Student student = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
             Student updatedStudent = studentService.updateStudent(student, httpService.extractId(req));
             if (Objects.nonNull(updatedStudent)) {
                 resp.getWriter().write(updatedStudent.toString());

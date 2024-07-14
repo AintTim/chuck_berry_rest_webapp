@@ -6,6 +6,7 @@ import com.ainetdinov.rest.model.Student;
 import com.ainetdinov.rest.service.GroupService;
 import com.ainetdinov.rest.service.HttpService;
 import com.ainetdinov.rest.service.ParsingService;
+import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.annotation.WebServlet;
@@ -46,14 +47,14 @@ public class GroupServlet extends HttpServlet {
 
         } else {
             resp.getWriter().write(groupService.getEntities().toString());
+            resp.setStatus(HttpServletResponse.SC_OK);
         }
-        resp.setStatus(HttpServletResponse.SC_OK);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
-        Group group = parsingService.parse(httpService.getRequestBody(req));
+        Group group = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
         if (groupService.addGroup(group)) {
             resp.setStatus(HttpServletResponse.SC_CREATED);
         } else {
@@ -64,7 +65,7 @@ public class GroupServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
-        List<Student> students = parsingService.parse(httpService.getRequestBody(req));
+        List<Student> students = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
         int groupId = httpService.extractId(req);
         groupService.addStudentsToGroup(students, groupId);
         Group updatedGroup = groupService.getEntity(g -> g.getId() == groupId);

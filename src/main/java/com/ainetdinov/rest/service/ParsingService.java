@@ -40,10 +40,10 @@ public class ParsingService {
         }
     }
 
-    public <T> T parse(String jsonBody) {
+    public <T> T parse(String jsonBody, TypeReference<T> typeReference) {
         try {
             if (isValidJson(jsonBody)) {
-                return mapper.readValue(jsonBody, new TypeReference<>(){});
+                return mapper.readValue(jsonBody, typeReference);
             } else {
                 return null;
             }
