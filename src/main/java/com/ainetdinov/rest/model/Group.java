@@ -17,7 +17,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @EqualsAndHashCode(exclude = {"uuid"})
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Group implements Entity{
+public class Group implements Entity {
     private String uuid;
     private String number;
     private List<Student> students;

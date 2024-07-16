@@ -84,8 +84,8 @@ public class ScheduleServlet extends HttpServlet {
         List<Schedule> schedules = new ArrayList<>();
         if (Objects.nonNull(object)) {
             Predicate<Schedule> filter = switch (model) {
-                case GROUP, STUDENT -> schedule -> schedule.getGroup().equals(((Group)object).getUuid());
-                case TEACHER -> schedule -> schedule.getTeacher().equals(((Teacher)object).getUuid());
+                case GROUP, STUDENT -> schedule -> schedule.getGroup().equals(((Group) object).getUuid());
+                case TEACHER -> schedule -> schedule.getTeacher().equals(((Teacher) object).getUuid());
                 case SCHEDULE -> schedule -> schedule.getStart().toLocalDate().equals(object);
             };
             schedules = scheduleService.getEntities(filter);

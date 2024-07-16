@@ -18,7 +18,7 @@ import java.time.LocalDate;
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @EqualsAndHashCode(exclude = {"uuid"})
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Student implements Entity{
+public class Student implements Entity {
     private String uuid;
     private String name;
     private String surname;
