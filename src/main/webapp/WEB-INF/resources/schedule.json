@@ -1,26 +1,30 @@
 [
   {
+    "uuid": "4427053b-a4a8-4fcd-8997-70192c7c9ab0",
     "start": "2025-06-07 11:00",
     "end": "2025-06-07 13:00",
-    "groupId": 1,
-    "teacherId": 1
+    "group": "3df8d0cb-e008-4047-89bd-497055a55978",
+    "teacher": "aa626cb8-ec3c-4901-919f-482940635b82"
   },
   {
+    "uuid": "0e99002c-3779-441b-850c-08a6188f7cf8",
     "start": "2025-06-07 10:00",
     "end": "2025-06-07 11:30",
-    "groupId": 3,
-    "teacherId": 5
+    "group": "86f0e4fb-c155-44a4-bd79-6705ecdf9266",
+    "teacher": "63f47297-ef5f-4df7-8eb4-a249c7af1699"
   },
   {
+    "uuid": "c1fb5484-03aa-4b4d-b837-65884bc6bb96",
     "start": "2025-06-07 18:00",
     "end": "2025-06-07 20:30",
-    "groupId": 4,
-    "teacherId": 2
+    "group": "b6710cae-60ed-4946-a770-c30a6f79a9d1",
+    "teacher": "8c0f90ad-0a5a-4396-bd3f-18bc66d0bd17"
   },
   {
+    "uuid": "6c25d5a4-54e2-4160-a482-e30ae91e19de",
     "start": "2025-06-07 10:00",
     "end": "2025-06-07 15:00",
-    "groupId": 2,
-    "teacherId": 3
+    "group": "51c9cafa-b4d3-4fe2-aae2-34fb9bb39c8d",
+    "teacher": "376e9449-a790-4dd9-958c-a7007486b2ea"
   }
 ]

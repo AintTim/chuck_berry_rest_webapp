@@ -12,11 +12,12 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import static com.ainetdinov.rest.constant.Endpoint.*;
 
@@ -38,11 +39,11 @@ public class StudentServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
         if (httpService.containsPath(req)) {
-            getStudentById(req, resp);
+            getStudentById(httpService.extractUUID(req), resp);
         } else if (httpService.containsQueryString(req)) {
             getStudentsBySurname(req, resp);
         } else {
-            resp.getWriter().write(studentService.getEntities().toString());
+            resp.getWriter().write(new ArrayList<>(studentService.getEntities().values()).toString());
             resp.setStatus(HttpServletResponse.SC_OK);
         }
     }
@@ -61,8 +62,9 @@ public class StudentServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
         httpService.prepareResponse(resp);
-        if (httpService.containsPath(req)) {
-            if (studentService.deleteStudent(httpService.extractId(req))) {
+        UUID uuid = httpService.extractUUID(req);
+        if (httpService.containsPath(req) && Objects.nonNull(uuid)) {
+            if (studentService.deleteStudent(uuid)) {
                 resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
             } else {
                 resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -75,28 +77,19 @@ public class StudentServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
+        UUID uuid = httpService.extractUUID(req);
         if (httpService.containsPath(req)) {
             Student student = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
-            Student updatedStudent = studentService.updateStudent(student, httpService.extractId(req));
-            if (Objects.nonNull(updatedStudent)) {
-                resp.getWriter().write(updatedStudent.toString());
-                resp.setStatus(HttpServletResponse.SC_OK);
-            } else {
-                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            }
+            Student updatedStudent = studentService.updateStudent(student, uuid);
+            httpService.writeResponse(resp, updatedStudent);
         } else {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 
-    private void getStudentById(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Student student = studentService.getEntity(s -> s.getId() == httpService.extractId(request));
-        if (Objects.nonNull(student)) {
-            response.getWriter().write(student.toString());
-            response.setStatus(HttpServletResponse.SC_OK);
-        } else {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        }
+    private void getStudentById(UUID uuid, HttpServletResponse response) throws IOException {
+        Student student = studentService.getEntity(uuid);
+        httpService.writeResponse(response, student);
     }
 
     private void getStudentsBySurname(HttpServletRequest request, HttpServletResponse response) throws IOException {

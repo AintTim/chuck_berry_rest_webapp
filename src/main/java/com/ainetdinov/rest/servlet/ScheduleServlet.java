@@ -4,7 +4,6 @@ import com.ainetdinov.rest.constant.ScheduleQuery;
 import com.ainetdinov.rest.constant.WebConstant;
 import com.ainetdinov.rest.model.Group;
 import com.ainetdinov.rest.model.Schedule;
-import com.ainetdinov.rest.model.ScheduleDTO;
 import com.ainetdinov.rest.model.Teacher;
 import com.ainetdinov.rest.service.HttpService;
 import com.ainetdinov.rest.service.ParsingService;
@@ -56,7 +55,7 @@ public class ScheduleServlet extends HttpServlet {
                 schedules = getSchedulesByDate(req);
             }
         } else {
-            schedules = scheduleService.getEntities();
+            schedules = new ArrayList<>(scheduleService.getEntities().values());
         }
         sendResponse(resp, schedules);
     }
@@ -75,9 +74,9 @@ public class ScheduleServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
-        ScheduleDTO scheduleDTO = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
-        if (Objects.nonNull(scheduleDTO)) {
-            Schedule updatedSchedule = scheduleService.updateSchedule(scheduleDTO.getCurrent(), scheduleDTO.getUpdated());
+        Schedule schedule = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
+        if (Objects.nonNull(schedule)) {
+            Schedule updatedSchedule = scheduleService.updateSchedule(schedule, httpService.extractUUID(req));
             if (Objects.nonNull(updatedSchedule)) {
                 resp.getWriter().write(updatedSchedule.toString());
                 resp.setStatus(HttpServletResponse.SC_OK);
@@ -93,8 +92,8 @@ public class ScheduleServlet extends HttpServlet {
         List<Schedule> schedules = new ArrayList<>();
         if (Objects.nonNull(object)) {
             Predicate<Schedule> filter = switch (model) {
-                case GROUP, STUDENT -> schedule -> schedule.getGroupId().equals(((Group)object).getId());
-                case TEACHER -> schedule -> schedule.getTeacherId().equals(((Teacher)object).getId());
+                case GROUP, STUDENT -> schedule -> schedule.getGroup().equals(((Group)object).getUuid());
+                case TEACHER -> schedule -> schedule.getTeacher().equals(((Teacher)object).getUuid());
                 case SCHEDULE -> schedule -> schedule.getStart().toLocalDate().equals(object);
             };
             schedules = scheduleService.getEntities(filter);

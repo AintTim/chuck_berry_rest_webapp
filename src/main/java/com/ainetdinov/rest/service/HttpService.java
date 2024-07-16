@@ -7,14 +7,36 @@ import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Log4j2
 public class HttpService {
+    private final ValidatorService<String> validator;
     private final String EMPTY_STRING = "";
 
-    public int extractId(HttpServletRequest request) {
-        return Integer.parseInt(request.getPathInfo().replace(Endpoint.SLASH, EMPTY_STRING));
+    public HttpService(ValidatorService<String> validator) {
+        this.validator = validator;
+    }
+
+    public UUID extractUUID(HttpServletRequest request) {
+        String uuid = request.getPathInfo().replace(Endpoint.SLASH, EMPTY_STRING);
+        log.info("Validating UUID: {}", uuid);
+        if (validator.validate(uuid)) {
+            return UUID.fromString(uuid);
+        } else {
+            log.warn("Invalid UUID: {}", uuid);
+            return null;
+        }
+    }
+
+    public void writeResponse(HttpServletResponse response, Object object) throws IOException {
+        if (Objects.nonNull(object)) {
+            response.getWriter().write(object.toString());
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        }
     }
 
     public boolean containsQueryString(HttpServletRequest request) {

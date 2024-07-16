@@ -24,4 +24,10 @@ public class WebConstant {
     public static final String TEACHERS_PATH = "teachers.path";
     public static final String GROUPS_PATH = "groups.path";
     public static final String SCHEDULES_PATH = "schedules.path";
+
+    public static final String DIGIT_REGEX = "\\d";
+    public static final String CAPITAL_REGEX = "[A-Z]\\w+";
+    public static final String BELARUS_PHONE_REGEX = "^(\\+375) \\d{2} \\d{3}-\\d{2}-\\d{2}";
+    public static final String RUSSIAN_PHONE_REGEX = "^(\\+7) \\d{3} \\d{3}-\\d{2}-\\d{2}";
+    public static final String UUID_REGEX = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
 }

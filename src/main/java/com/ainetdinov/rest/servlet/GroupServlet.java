@@ -15,8 +15,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 import static com.ainetdinov.rest.constant.Endpoint.*;
@@ -44,9 +46,8 @@ public class GroupServlet extends HttpServlet {
             } else {
                 getGroupByStudentSurname(req, resp);
             }
-
         } else {
-            resp.getWriter().write(groupService.getEntities().toString());
+            resp.getWriter().write(new ArrayList<>(groupService.getEntities().values()).toString());
             resp.setStatus(HttpServletResponse.SC_OK);
         }
     }
@@ -66,9 +67,7 @@ public class GroupServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
         List<Student> students = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
-        int groupId = httpService.extractId(req);
-        groupService.addStudentsToGroup(students, groupId);
-        Group updatedGroup = groupService.getEntity(g -> g.getId() == groupId);
+        Group updatedGroup = groupService.addStudentsToGroup(students, httpService.extractUUID(req));
         resp.getWriter().write(updatedGroup.toString());
         resp.setStatus(HttpServletResponse.SC_OK);
     }
@@ -76,12 +75,7 @@ public class GroupServlet extends HttpServlet {
     private void getGroupByNumber(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String number = req.getParameter(WebConstant.NUMBER);
         Group group = groupService.getEntity(g -> g.getNumber().equals(number));
-        if (Objects.isNull(group)) {
-            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        } else {
-            resp.getWriter().write(group.toString());
-            resp.setStatus(HttpServletResponse.SC_OK);
-        }
+        httpService.writeResponse(resp, group);
     }
 
     private void getGroupByStudentSurname(HttpServletRequest req, HttpServletResponse resp) throws IOException {

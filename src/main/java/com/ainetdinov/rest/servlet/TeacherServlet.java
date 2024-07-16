@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -39,7 +40,7 @@ public class TeacherServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
-        resp.getWriter().write(teacherService.getEntities().toString());
+        resp.getWriter().write(new ArrayList<>(teacherService.getEntities().values()).toString());
         resp.setStatus(HttpServletResponse.SC_OK);
     }
 
@@ -58,7 +59,7 @@ public class TeacherServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
         if (httpService.containsPath(req)) {
-            List<Subject> subjects = teacherService.updateTeacherSubjects(parseTeacherSubjects(req), httpService.extractId(req));
+            List<Subject> subjects = teacherService.updateTeacherSubjects(parseTeacherSubjects(req), httpService.extractUUID(req));
             if (Objects.nonNull(subjects)) {
                 resp.getWriter().write(subjects.toString());
                 resp.setStatus(HttpServletResponse.SC_OK);

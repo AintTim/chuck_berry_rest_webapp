@@ -1,13 +1,11 @@
 package com.ainetdinov.rest.service;
 
-import com.ainetdinov.rest.model.Group;
 import com.ainetdinov.rest.model.Schedule;
-import com.ainetdinov.rest.model.Teacher;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.UUID;
 
 @Log4j2
 @Getter
@@ -21,13 +19,13 @@ public class ScheduleService extends EntityService<Schedule> {
         this.groupService = groupService;
     }
 
-    public Schedule updateSchedule(Schedule current, Schedule updated) {
+    public Schedule updateSchedule(Schedule updated, UUID uuid) {
         synchronized (entities) {
-            //TODO add UUID
-            log.info("Schedule: validation before update\ncurrent: {}\nupdated: {}", current, updated);
-            if (validateScheduleUpdate(current, updated)) {
-                entities.set(entities.indexOf(current), updated);
-                log.info("Schedule: updated");
+            log.info("Schedule {}: validation before update", uuid.toString());
+            if (validateEntity(updated, validator::validate, this::isUnique, this::validateTeacherAndGroupPresence)) {
+                updated.setUuid(uuid.toString());
+                entities.put(uuid, updated);
+                log.info("Schedule {}: updated", updated.getUuid());
                 return updated;
             } else {
                 return null;
@@ -37,10 +35,11 @@ public class ScheduleService extends EntityService<Schedule> {
 
     public boolean addSchedule(Schedule schedule) {
         synchronized (this) {
-            log.info("Schedule: validation before add\n{}", schedule);
+            schedule.setUuid(generateUUID());
+            log.info("New schedule: validation before add\n{}", schedule);
             if (validateEntity(schedule, validator::validate, this::isUnique, this::validateTeacherAndGroupPresence)) {
-                entities.add(schedule);
-                log.info("Schedule: added");
+                entities.put(UUID.fromString(schedule.getUuid()), schedule);
+                log.info("Schedule {}: added", schedule.getUuid());
                 return true;
             } else {
                 return false;
@@ -48,15 +47,10 @@ public class ScheduleService extends EntityService<Schedule> {
         }
     }
 
-    private boolean validateScheduleUpdate(Schedule current, Schedule updated) {
-        return validateEntity(current, validator::validate, entities::contains, this::validateTeacherAndGroupPresence)
-                && validateEntity(updated, validator::validate, this::isUnique, this::validateTeacherAndGroupPresence);
-    }
-
     private boolean validateTeacherAndGroupPresence(Schedule schedule) {
-        Teacher teacher = teacherService.getEntity(t -> Objects.equals(t.getId(), schedule.getTeacherId()));
-        Group group = groupService.getEntity(g -> Objects.equals(g.getId(), schedule.getGroupId()));
-        return Objects.nonNull(teacher) && Objects.nonNull(group);
+        boolean isTeacherPresent = teacherService.getEntities().containsKey(UUID.fromString(schedule.getTeacher()));
+        boolean isGroupPresent = groupService.getEntities().containsKey(UUID.fromString(schedule.getGroup()));
+        return isTeacherPresent && isGroupPresent;
     }
 }
 

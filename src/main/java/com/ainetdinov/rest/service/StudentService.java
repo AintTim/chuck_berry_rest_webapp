@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Log4j2
 public class StudentService extends EntityService<Student> {
@@ -13,14 +14,14 @@ public class StudentService extends EntityService<Student> {
         super(students, validator);
     }
 
-    public Student updateStudent(Student updatedStudent, int id) {
-        Student currentStudent = getEntity(student -> student.getId() == id);
+    public Student updateStudent(Student updatedStudent, UUID uuid) {
         synchronized (entities) {
-            log.info("Student {}: validation before update\ncurrent: {}\nupdated:{}", id, currentStudent, updatedStudent);
+            Student currentStudent = getEntity(uuid);
+            updatedStudent.setUuid(uuid.toString());
+            log.info("Student {}: validation before update\ncurrent: {}\nupdated:{}", uuid, currentStudent, updatedStudent);
             if (validateEntity(updatedStudent, validator::validate) && validateEntity(currentStudent, Objects::nonNull)) {
-                updatedStudent.setId((long) id);
-                entities.set(entities.indexOf(currentStudent), updatedStudent);
-                log.info("Student {}: updated", currentStudent.getId());
+                entities.put(uuid, updatedStudent);
+                log.info("Student {}: updated", uuid);
                 return updatedStudent;
             } else {
                 return null;
@@ -30,10 +31,11 @@ public class StudentService extends EntityService<Student> {
 
     public boolean addStudent(Student student) {
         synchronized (entities) {
-            log.info("Student {}: validation before add\n{}", student.getId(), student);
+            log.info("New student: validation before add\n{}", student);
             if (validateEntity(student, validator::validate, this::isUnique)) {
-                entities.add(student);
-                    log.info("Student {}: added", student.getId());
+                student.setUuid(generateUUID());
+                entities.put(UUID.fromString(student.getUuid()), student);
+                log.info("Student {}: added", student.getUuid());
                 return true;
             } else {
                 return false;
@@ -41,10 +43,10 @@ public class StudentService extends EntityService<Student> {
         }
     }
 
-    public boolean deleteStudent(int id) {
+    public boolean deleteStudent(UUID uuid) {
         synchronized (entities) {
-            log.info("Student {}: delete\n{}", id, entities);
-            return entities.removeIf(student -> student.getId() == id);
+            log.info("Student {}: delete\n{}", uuid, entities);
+            return Objects.nonNull(entities.remove(uuid));
         }
     }
 }

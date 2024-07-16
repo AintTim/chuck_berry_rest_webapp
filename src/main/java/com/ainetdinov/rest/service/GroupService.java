@@ -5,9 +5,7 @@ import com.ainetdinov.rest.model.Student;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Predicate;
 
 @Log4j2
@@ -21,9 +19,15 @@ public class GroupService extends EntityService<Group> {
     }
 
     @Override
-    public List<Group> getEntities() {
+    public Map<UUID, Group> getEntities() {
         syncGroupStudents();
         return entities;
+    }
+
+    @Override
+    public Group getEntity(UUID uuid) {
+        syncGroupStudents();
+        return super.getEntity(uuid);
     }
 
     @Override
@@ -32,13 +36,20 @@ public class GroupService extends EntityService<Group> {
         return super.getEntity(filter);
     }
 
+    @Override
+    public List<Group> getEntities(Predicate<Group> filter) {
+        syncGroupStudents();
+        return super.getEntities(filter);
+    }
+
     public boolean addGroup(Group group) {
         synchronized (entities) {
-            log.info("Group {}: validation before add\n{}",group.getNumber(), group);
+            group.setUuid(generateUUID());
+            log.info("New group {}: validation before add\n{}", group.getNumber(), group);
             if (validateEntity(group, validator::validate, this::isUnique)
                     && validateStudents(group.getStudents(), false)) {
-                entities.add(group);
-                log.info("Group {}: added", group.getId());
+                entities.put(UUID.fromString(group.getUuid()), group);
+                log.info("Group {}: added", group.getUuid());
                 return true;
             } else {
                 return false;
@@ -46,15 +57,17 @@ public class GroupService extends EntityService<Group> {
         }
     }
 
-    public void addStudentsToGroup(List<Student> students, int groupId) {
-        log.info("Looking for group with group id {}", groupId);
-        Group group = getEntity(g -> g.getId() == groupId);
+    public Group addStudentsToGroup(List<Student> students, UUID uuid) {
+        Group group;
         synchronized (entities) {
+            log.info("Looking for group with group uuid {}", uuid);
+            group = getEntity(uuid);
             if (Objects.nonNull(group) && validateStudents(students, false)) {
                 group.getStudents().addAll(students);
                 log.info("Students have been added to group {}\n{}", group.getNumber(), group.getStudents());
             }
         }
+        return group;
     }
 
     public Group getGroupByStudentNameAndSurname(String name, String surname) {
@@ -69,22 +82,23 @@ public class GroupService extends EntityService<Group> {
 
     private void syncGroupStudents() {
         synchronized (this) {
-            entities.forEach(group -> {
+            entities.values().forEach(group -> {
                 if (!validateStudents(group.getStudents(), true)) {
                     log.debug("Group {}: outdated data", group.getNumber());
-                    group.getStudents().removeIf(student -> !studentService.getEntities().contains(student));
+                    group.getStudents().removeIf(student -> !studentService.getEntities().containsKey(UUID.fromString(student.getUuid())));
                 }
             });
         }
     }
 
     private boolean validateStudents(List<Student> students, boolean currentStudents) {
-        boolean isPresent = new HashSet<>(studentService.getEntities()).containsAll(students);
+        boolean isPresent = new HashSet<>(studentService.getEntities().values()).containsAll(students);
         if (currentStudents) {
             log.info("Checking students presence within database");
             return isPresent;
         } else {
-            boolean isRelatedToGroup = entities.stream()
+            boolean isRelatedToGroup = entities.values()
+                    .stream()
                     .flatMap(g -> g.getStudents().stream())
                     .anyMatch(students::contains);
             log.info("Checking students presence within database and existing groups relation absence");

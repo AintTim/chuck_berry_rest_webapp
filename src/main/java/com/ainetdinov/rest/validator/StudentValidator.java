@@ -6,17 +6,16 @@ import com.ainetdinov.rest.service.ValidatorService;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+import static com.ainetdinov.rest.constant.WebConstant.*;
+
 public class StudentValidator implements ValidatorService<Student> {
-    private static final String DIGIT_REGEX = "\\d";
-    private static final String CAPITAL_REGEX = "[A-Z]\\w+";
-    private static final String BELARUS_PHONE_REGEX = "^(\\+375) \\d{2} \\d{3}-\\d{2}-\\d{2}";
-    private static final String RUSSIAN_PHONE_REGEX = "^(\\+7) \\d{3} \\d{3}-\\d{2}-\\d{2}";
 
     @Override
     public boolean validate(Student object) {
         return Objects.nonNull(object)
+                && validateUuid(object)
                 && validateNameAndSurname(object, CAPITAL_REGEX, true)
-                &&validateNameAndSurname(object, DIGIT_REGEX, false)
+                && validateNameAndSurname(object, DIGIT_REGEX, false)
                 && validatePhoneNumber(object);
     }
 
@@ -32,5 +31,14 @@ public class StudentValidator implements ValidatorService<Student> {
     private boolean validatePhoneNumber(Student object) {
         Pattern pattern = Pattern.compile(String.format("%s|%s", BELARUS_PHONE_REGEX, RUSSIAN_PHONE_REGEX));
         return pattern.matcher(object.getPhoneNumber()).matches();
+    }
+
+    private boolean validateUuid(Student object) {
+        if (Objects.isNull(object.getUuid())) {
+            return true;
+        } else {
+            Pattern pattern = Pattern.compile(UUID_REGEX);
+            return pattern.matcher(object.getUuid()).matches();
+        }
     }
 }

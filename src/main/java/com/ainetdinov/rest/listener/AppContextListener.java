@@ -6,10 +6,7 @@ import com.ainetdinov.rest.model.Schedule;
 import com.ainetdinov.rest.model.Student;
 import com.ainetdinov.rest.model.Teacher;
 import com.ainetdinov.rest.service.*;
-import com.ainetdinov.rest.validator.GroupValidator;
-import com.ainetdinov.rest.validator.ScheduleValidator;
-import com.ainetdinov.rest.validator.StudentValidator;
-import com.ainetdinov.rest.validator.TeacherValidator;
+import com.ainetdinov.rest.validator.*;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
@@ -46,7 +43,7 @@ public class AppContextListener implements ServletContextListener {
         context.setAttribute(WebConstant.TEACHER_SERVICE, teacherService);
         context.setAttribute(WebConstant.GROUP_SERVICE, groupService);
         context.setAttribute(WebConstant.SCHEDULE_SERVICE, scheduleService);
-        context.setAttribute(WebConstant.HTTP_SERVICE, new HttpService());
+        context.setAttribute(WebConstant.HTTP_SERVICE, new HttpService(new HttpValidator()));
 
         ServletContextListener.super.contextInitialized(sce);
     }
