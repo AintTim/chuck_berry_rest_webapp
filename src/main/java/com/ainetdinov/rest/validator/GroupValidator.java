@@ -1,7 +1,6 @@
 package com.ainetdinov.rest.validator;
 
 import com.ainetdinov.rest.model.Group;
-import com.ainetdinov.rest.model.Teacher;
 import com.ainetdinov.rest.service.ValidatorService;
 
 import java.util.Objects;
