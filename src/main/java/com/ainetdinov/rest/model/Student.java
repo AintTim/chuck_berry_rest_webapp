@@ -14,7 +14,7 @@ import java.time.LocalDate;
 
 @Data
 @Jacksonized
-@Builder
+@Builder(toBuilder = true)
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @EqualsAndHashCode(exclude = {"uuid"})
 @JsonIgnoreProperties(ignoreUnknown = true)

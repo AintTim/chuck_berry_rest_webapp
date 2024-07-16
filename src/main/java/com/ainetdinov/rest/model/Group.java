@@ -12,7 +12,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import java.util.List;
 
 @Data
-@Builder
+@Builder(toBuilder = true)
 @Jacksonized
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 @EqualsAndHashCode(exclude = {"uuid"})
