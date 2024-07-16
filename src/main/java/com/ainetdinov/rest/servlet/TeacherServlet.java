@@ -40,19 +40,14 @@ public class TeacherServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
-        resp.getWriter().write(new ArrayList<>(teacherService.getEntities().values()).toString());
-        resp.setStatus(HttpServletResponse.SC_OK);
+        httpService.writeResponse(resp, new ArrayList<>(teacherService.getEntities().values()));
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
         Teacher teacher = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
-        if (teacherService.addTeacher(teacher)) {
-            resp.setStatus(HttpServletResponse.SC_OK);
-        } else {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        }
+        httpService.writeResponse(resp, teacher, teacherService::addTeacher, HttpServletResponse.SC_OK, HttpServletResponse.SC_BAD_REQUEST);
     }
 
     @Override
@@ -60,12 +55,7 @@ public class TeacherServlet extends HttpServlet {
         httpService.prepareResponse(resp);
         if (httpService.containsPath(req)) {
             List<Subject> subjects = teacherService.updateTeacherSubjects(parseTeacherSubjects(req), httpService.extractUUID(req));
-            if (Objects.nonNull(subjects)) {
-                resp.getWriter().write(subjects.toString());
-                resp.setStatus(HttpServletResponse.SC_OK);
-            } else {
-                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            }
+            httpService.writeResponse(resp, subjects, Objects::nonNull, HttpServletResponse.SC_OK, HttpServletResponse.SC_BAD_REQUEST);
         } else {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }

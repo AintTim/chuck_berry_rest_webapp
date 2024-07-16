@@ -57,18 +57,15 @@ public class ScheduleServlet extends HttpServlet {
         } else {
             schedules = new ArrayList<>(scheduleService.getEntities().values());
         }
-        sendResponse(resp, schedules);
+        Predicate<List<Schedule>> isNotEmpty = list -> !list.isEmpty();
+        httpService.writeResponse(resp, schedules, isNotEmpty, HttpServletResponse.SC_OK, HttpServletResponse.SC_NOT_FOUND);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
         Schedule schedule = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
-        if (scheduleService.addSchedule(schedule)) {
-            resp.setStatus(HttpServletResponse.SC_CREATED);
-        } else {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        }
+        httpService.writeResponse(resp, schedule, scheduleService::addSchedule, HttpServletResponse.SC_OK, HttpServletResponse.SC_BAD_REQUEST);
     }
 
     @Override
@@ -77,12 +74,7 @@ public class ScheduleServlet extends HttpServlet {
         Schedule schedule = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
         if (Objects.nonNull(schedule)) {
             Schedule updatedSchedule = scheduleService.updateSchedule(schedule, httpService.extractUUID(req));
-            if (Objects.nonNull(updatedSchedule)) {
-                resp.getWriter().write(updatedSchedule.toString());
-                resp.setStatus(HttpServletResponse.SC_OK);
-            } else {
-                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            }
+            httpService.writeResponse(resp, updatedSchedule, Objects::nonNull, HttpServletResponse.SC_OK, HttpServletResponse.SC_NOT_FOUND);
         } else {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
@@ -99,15 +91,6 @@ public class ScheduleServlet extends HttpServlet {
             schedules = scheduleService.getEntities(filter);
         }
         return schedules;
-    }
-
-    private void sendResponse(HttpServletResponse response, List<Schedule> schedules) throws IOException {
-        if (schedules.isEmpty()) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        } else {
-            response.getWriter().write(schedules.toString());
-            response.setStatus(HttpServletResponse.SC_OK);
-        }
     }
 
     private List<Schedule> getSchedulesByDate(HttpServletRequest request) {

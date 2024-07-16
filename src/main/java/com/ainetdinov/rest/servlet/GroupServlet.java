@@ -46,8 +46,7 @@ public class GroupServlet extends HttpServlet {
                 getGroupByStudentSurname(req, resp);
             }
         } else {
-            resp.getWriter().write(new ArrayList<>(groupService.getEntities().values()).toString());
-            resp.setStatus(HttpServletResponse.SC_OK);
+            httpService.writeResponse(resp, new ArrayList<>(groupService.getEntities().values()));
         }
     }
 
@@ -55,11 +54,7 @@ public class GroupServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
         Group group = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
-        if (groupService.addGroup(group)) {
-            resp.setStatus(HttpServletResponse.SC_CREATED);
-        } else {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        }
+        httpService.writeResponse(resp, group, groupService::addGroup, HttpServletResponse.SC_CREATED, HttpServletResponse.SC_BAD_REQUEST);
     }
 
     @Override
@@ -67,8 +62,7 @@ public class GroupServlet extends HttpServlet {
         httpService.prepareResponse(resp);
         List<Student> students = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
         Group updatedGroup = groupService.addStudentsToGroup(students, httpService.extractUUID(req));
-        resp.getWriter().write(updatedGroup.toString());
-        resp.setStatus(HttpServletResponse.SC_OK);
+        httpService.writeResponse(resp, updatedGroup);
     }
 
     private void getGroupByNumber(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -83,11 +77,7 @@ public class GroupServlet extends HttpServlet {
                 .stream()
                 .anyMatch(student -> student.getSurname().equalsIgnoreCase(studentSurname));
         List<Group> groups = groupService.getEntities(isStudentPresent);
-        if (groups.isEmpty()) {
-            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        } else {
-            resp.getWriter().write(groups.toString());
-            resp.setStatus(HttpServletResponse.SC_OK);
-        }
+        Predicate<List<Group>> isNotEmpty = list -> !list.isEmpty();
+        httpService.writeResponse(resp, groups, isNotEmpty, HttpServletResponse.SC_OK, HttpServletResponse.SC_NOT_FOUND);
     }
 }

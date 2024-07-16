@@ -8,6 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -36,6 +37,15 @@ public class HttpService {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        }
+    }
+
+    public <T> void writeResponse(HttpServletResponse response, T object, Predicate<T> condition, int validStatus, int invalidStatus) throws IOException {
+        if (condition.test(object)) {
+            response.getWriter().write(object.toString());
+            response.setStatus(validStatus);
+        } else {
+            response.setStatus(invalidStatus);
         }
     }
 

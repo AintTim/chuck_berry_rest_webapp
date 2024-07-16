@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 import static com.ainetdinov.rest.constant.Endpoint.*;
 
@@ -43,8 +44,7 @@ public class StudentServlet extends HttpServlet {
         } else if (httpService.containsQueryString(req)) {
             getStudentsBySurname(req, resp);
         } else {
-            resp.getWriter().write(new ArrayList<>(studentService.getEntities().values()).toString());
-            resp.setStatus(HttpServletResponse.SC_OK);
+            httpService.writeResponse(resp, new ArrayList<>(studentService.getEntities().values()));
         }
     }
 
@@ -52,11 +52,7 @@ public class StudentServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
         Student student = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
-        if (studentService.addStudent(student)) {
-            resp.setStatus(HttpServletResponse.SC_CREATED);
-        } else {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        }
+        httpService.writeResponse(resp, student, studentService::addStudent, HttpServletResponse.SC_CREATED, HttpServletResponse.SC_BAD_REQUEST);
     }
 
     @Override
@@ -95,11 +91,7 @@ public class StudentServlet extends HttpServlet {
     private void getStudentsBySurname(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String surname = request.getParameter(WebConstant.SURNAME);
         List<Student> students = studentService.getEntities(s -> s.getSurname().equals(surname));
-        if (students.isEmpty()) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        } else {
-            response.getWriter().write(students.toString());
-            response.setStatus(HttpServletResponse.SC_OK);
-        }
+        Predicate<List<Student>> isNotEmpty = list -> !list.isEmpty();
+        httpService.writeResponse(response, students, isNotEmpty, HttpServletResponse.SC_OK, HttpServletResponse.SC_NOT_FOUND);
     }
 }
