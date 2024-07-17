@@ -35,16 +35,14 @@ public class ScheduleService extends EntityService<Schedule> {
     }
 
     public boolean addSchedule(Schedule schedule) {
-        synchronized (this) {
-            schedule.setUuid(generateUUID());
-            log.info("New schedule: validation before add\n{}", schedule);
-            if (validateEntity(schedule, validator::validate, this::isUnique, this::validateTeacherAndGroupPresence)) {
-                entities.put(UUID.fromString(schedule.getUuid()), schedule);
-                log.info("Schedule {}: added", schedule.getUuid());
-                return true;
-            } else {
-                return false;
-            }
+        schedule.setUuid(generateUUID());
+        log.info("New schedule: validation before add\n{}", schedule);
+        if (validateEntity(schedule, validator::validate, this::isUnique, this::validateTeacherAndGroupPresence)) {
+            entities.put(UUID.fromString(schedule.getUuid()), schedule);
+            log.info("Schedule {}: added", schedule.getUuid());
+            return true;
+        } else {
+            return false;
         }
     }
 

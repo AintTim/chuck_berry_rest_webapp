@@ -15,38 +15,32 @@ public class StudentService extends EntityService<Student> {
     }
 
     public Student updateStudent(Student updatedStudent, UUID uuid) {
-        synchronized (entities) {
-            Student currentStudent = getEntity(uuid);
-            log.info("Student {}: validation before update\ncurrent: {}\nupdated:{}", uuid.toString(), currentStudent, updatedStudent);
-            if (validateEntity(updatedStudent, validator::validate, this::isUnique) && validateEntity(currentStudent, Objects::nonNull)) {
-                updatedStudent.setUuid(uuid.toString());
-                entities.put(uuid, updatedStudent);
-                log.info("Student {}: updated", uuid);
-                return updatedStudent;
-            } else {
-                return null;
-            }
+        Student currentStudent = getEntity(uuid);
+        log.info("Student {}: validation before update\ncurrent: {}\nupdated:{}", uuid.toString(), currentStudent, updatedStudent);
+        if (validateEntity(updatedStudent, validator::validate, this::isUnique) && validateEntity(currentStudent, Objects::nonNull)) {
+            updatedStudent.setUuid(uuid.toString());
+            entities.put(uuid, updatedStudent);
+            log.info("Student {}: updated", uuid);
+            return updatedStudent;
+        } else {
+            return null;
         }
     }
 
     public boolean addStudent(Student student) {
-        synchronized (entities) {
-            log.info("New student: validation before add\n{}", student);
-            if (validateEntity(student, validator::validate, this::isUnique)) {
-                student.setUuid(generateUUID());
-                entities.put(UUID.fromString(student.getUuid()), student);
-                log.info("Student {}: added", student.getUuid());
-                return true;
-            } else {
-                return false;
-            }
+        log.info("New student: validation before add\n{}", student);
+        if (validateEntity(student, validator::validate, this::isUnique)) {
+            student.setUuid(generateUUID());
+            entities.put(UUID.fromString(student.getUuid()), student);
+            log.info("Student {}: added", student.getUuid());
+            return true;
+        } else {
+            return false;
         }
     }
 
     public boolean deleteStudent(UUID uuid) {
-        synchronized (entities) {
-            log.info("Student {}: delete\n{}", uuid, entities);
-            return Objects.nonNull(entities.remove(uuid));
-        }
+        log.info("Student {}: delete\n{}", uuid, entities);
+        return Objects.nonNull(entities.remove(uuid));
     }
 }

@@ -44,52 +44,44 @@ public class GroupService extends EntityService<Group> {
     }
 
     public boolean addGroup(Group group) {
-        synchronized (entities) {
-            group.setUuid(generateUUID());
-            log.info("New group {}: validation before add\n{}", group.getNumber(), group);
-            if (validateEntity(group, validator::validate, this::isUnique)
-                    && validateStudents(group.getStudents(), false)) {
-                entities.put(UUID.fromString(group.getUuid()), group);
-                log.info("Group {}: added", group.getUuid());
-                return true;
-            } else {
-                return false;
-            }
+        group.setUuid(generateUUID());
+        log.info("New group {}: validation before add\n{}", group.getNumber(), group);
+        if (validateEntity(group, validator::validate, this::isUnique)
+                && validateStudents(group.getStudents(), false)) {
+            entities.put(UUID.fromString(group.getUuid()), group);
+            log.info("Group {}: added", group.getUuid());
+            return true;
+        } else {
+            return false;
         }
     }
 
     public Group addStudentsToGroup(List<Student> students, UUID uuid) {
         Group group;
-        synchronized (entities) {
-            log.info("Looking for group with group uuid {}", uuid);
-            group = getEntity(uuid);
-            if (Objects.nonNull(group) && validateStudents(students, false)) {
-                group.getStudents().addAll(students);
-                log.info("Students have been added to group {}\n{}", group.getNumber(), group.getStudents());
-            }
+        log.info("Looking for group with group uuid {}", uuid);
+        group = getEntity(uuid);
+        if (Objects.nonNull(group) && validateStudents(students, false)) {
+            group.getStudents().addAll(students);
+            log.info("Students have been added to group {}\n{}", group.getNumber(), group.getStudents());
         }
         return group;
     }
 
     public Group getGroupByStudentNameAndSurname(String name, String surname) {
-        synchronized (entities) {
-            Predicate<Group> isFound = group -> group.getStudents()
-                    .stream()
-                    .anyMatch(student -> student.getName().equals(name) && student.getSurname().equals(surname));
-            log.debug("Looking for student {} {}", name, surname);
-            return getEntity(isFound);
-        }
+        Predicate<Group> isFound = group -> group.getStudents()
+                .stream()
+                .anyMatch(student -> student.getName().equals(name) && student.getSurname().equals(surname));
+        log.debug("Looking for student {} {}", name, surname);
+        return getEntity(isFound);
     }
 
     private void syncGroupStudents() {
-        synchronized (this) {
-            entities.values().forEach(group -> {
-                if (!validateStudents(group.getStudents(), true)) {
-                    log.debug("Group {}: outdated data", group.getNumber());
-                    group.getStudents().removeIf(student -> !studentService.getEntities().containsKey(UUID.fromString(student.getUuid())));
-                }
-            });
-        }
+        entities.values().forEach(group -> {
+            if (!validateStudents(group.getStudents(), true)) {
+                log.debug("Group {}: outdated data", group.getNumber());
+                group.getStudents().removeIf(student -> !studentService.getEntities().containsKey(UUID.fromString(student.getUuid())));
+            }
+        });
     }
 
     private boolean validateStudents(List<Student> students, boolean currentStudents) {
