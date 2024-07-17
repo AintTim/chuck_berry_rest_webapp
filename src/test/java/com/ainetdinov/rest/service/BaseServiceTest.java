@@ -43,8 +43,8 @@ public class BaseServiceTest {
     protected Schedule defaultSchedule() {
         return Schedule.builder()
                 .uuid("30ef0869-d5fb-49c7-9b66-16c6bde79d8c")
-                .start(LocalDateTime.now())
-                .end(LocalDateTime.now())
+                .start(LocalDateTime.now().plusDays(1L))
+                .end(LocalDateTime.now().plusDays(2L))
                 .group("cd8cdd4b-c2a9-4493-bdbe-8e84d38e6ffe")
                 .teacher("30ef0869-d5fb-49c7-9b66-16c6bde79d9a")
                 .build();
