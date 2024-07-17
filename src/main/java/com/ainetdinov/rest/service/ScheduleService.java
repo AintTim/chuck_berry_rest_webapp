@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Log4j2
@@ -20,16 +21,16 @@ public class ScheduleService extends EntityService<Schedule> {
     }
 
     public Schedule updateSchedule(Schedule updated, UUID uuid) {
-        synchronized (entities) {
-            log.info("Schedule {}: validation before update", uuid.toString());
-            if (validateEntity(updated, validator::validate, this::isUnique, this::validateTeacherAndGroupPresence)) {
-                updated.setUuid(uuid.toString());
-                entities.put(uuid, updated);
-                log.info("Schedule {}: updated", updated.getUuid());
-                return updated;
-            } else {
-                return null;
-            }
+        Schedule current = getEntity(uuid);
+        log.info("Schedule {}: validation before update\ncurrent: {}\nupdated: {}", uuid.toString(), current, updated);
+        if (validateEntity(current, Objects::nonNull)
+                && validateEntity(updated, validator::validate, this::isUnique, this::validateTeacherAndGroupPresence)) {
+            updated.setUuid(uuid.toString());
+            entities.put(uuid, updated);
+            log.info("Schedule {}: updated", updated.getUuid());
+            return updated;
+        } else {
+            return null;
         }
     }
 

@@ -17,9 +17,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class TeacherServiceTest {
+class TeacherServiceTest extends BaseServiceTest{
     @Spy
-    private static ValidatorService<Teacher> validator;
+    private ValidatorService<Teacher> validator;
 
     @Test
     void addTeacher_ShouldReturnTrue_WhenValidTeacher() {
@@ -70,14 +70,5 @@ class TeacherServiceTest {
         doReturn(teacher).when(teacherService).getEntity(any(UUID.class));
 
         assertThat(teacherService.updateTeacherSubjects(new ArrayList<>(), UUID.randomUUID()), Matchers.nullValue(List.class));
-    }
-
-    private static Teacher defaultTeacher() {
-        return Teacher.builder()
-                .uuid("30ef0869-d5fb-49c7-9b66-16c6bde79d9a")
-                .name("Anton")
-                .experience(3)
-                .subjects(List.of(Subject.MATH))
-                .build();
     }
 }

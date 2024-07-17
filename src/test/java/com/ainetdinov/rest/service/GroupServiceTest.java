@@ -8,8 +8,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Predicate;
@@ -19,10 +21,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class GroupServiceTest {
+class GroupServiceTest extends BaseServiceTest {
     @Spy
-    private static ValidatorService<Group> validator;
-    private static final StudentService studentService = createStudentService();
+    private ValidatorService<Group> validator;
+    private final StudentService studentService = createStudentService();
 
     @Test
     void getEntities_shouldReturnMapOfGroupsWithUuid() {
@@ -57,7 +59,7 @@ class GroupServiceTest {
     }
 
     @Test
-    void addGroup_shouldReturnTrue_WhenValidGroup() {
+    void addGroup_shouldReturnTrue_WhenValidData() {
         Group group = defaultGroup();
         GroupService groupService = spy(new GroupService(List.of(group), validator, studentService));
         doReturn(true).when(validator).validate(any(Group.class));
@@ -148,7 +150,7 @@ class GroupServiceTest {
         assertThat(filteredGroup, Matchers.nullValue(Group.class));
     }
 
-    private static StudentService createStudentService() {
+    private StudentService createStudentService() {
         StudentService mock = mock(StudentService.class);
         Student student1 = defaultStudent();
         Student student2 = student1.toBuilder().name("Jane").uuid("30ef0869-d5fb-49c7-9b66-16c6bde79d9b").build();
@@ -157,23 +159,5 @@ class GroupServiceTest {
                 UUID.fromString(student2.getUuid()), student2));
         when(mock.getEntities()).thenReturn(students);
         return mock;
-    }
-
-    private static Student defaultStudent() {
-        return Student.builder()
-                .uuid("30ef0869-d5fb-49c7-9b66-16c6bde79d9a")
-                .name("John")
-                .surname("Doe")
-                .birthDate(LocalDate.now())
-                .phoneNumber("+7 909 192-21-57")
-                .build();
-    }
-
-    private static Group defaultGroup() {
-        return Group.builder()
-                .uuid("cd8cdd4b-c2a9-4493-bdbe-8e84d38e6ffe")
-                .number("1")
-                .students(new ArrayList<>(List.of(defaultStudent())))
-                .build();
     }
 }

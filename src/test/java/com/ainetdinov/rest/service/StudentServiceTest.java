@@ -7,7 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,9 +16,9 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
 @ExtendWith(MockitoExtension.class)
-class StudentServiceTest {
+class StudentServiceTest extends BaseServiceTest{
     @Spy
-    private static ValidatorService<Student> validator;
+    private ValidatorService<Student> validator;
 
     @Test
     void addStudent_ShouldReturnTrue_WhenValidStudent() {
@@ -94,15 +93,5 @@ class StudentServiceTest {
         Student student = defaultStudent();
         UUID uuid = UUID.fromString(student.getUuid());
         assertThat(studentService.updateStudent(student, uuid), Matchers.nullValue(Student.class));
-    }
-
-    private static Student defaultStudent() {
-        return Student.builder()
-                .uuid("30ef0869-d5fb-49c7-9b66-16c6bde79d9a")
-                .name("John")
-                .surname("Doe")
-                .birthDate(LocalDate.now())
-                .phoneNumber("+7 909 192-21-57")
-                .build();
     }
 }
