@@ -24,7 +24,7 @@ class ScheduleValidatorTest extends BaseServiceTest {
     void validate_ShouldReturnTrue_WhenNullUuid() {
         Schedule schedule = defaultSchedule();
         schedule.setUuid(null);
-        assertThat(validator.validate(defaultSchedule()), Matchers.is(true));
+        assertThat(validator.validate(schedule), Matchers.is(true));
     }
 
     @Test
@@ -47,9 +47,23 @@ class ScheduleValidatorTest extends BaseServiceTest {
     }
 
     @Test
-    void validate_ShouldReturnFalse_WhenInvalidUuid() {
+    void validate_ShouldReturnFalse_WhenScheduleUuidIsInvalid() {
         Schedule schedule = defaultSchedule();
         schedule.setUuid(schedule.getUuid()+"abc");
+        assertThat(validator.validate(schedule), Matchers.is(false));
+    }
+
+    @Test
+    void validate_ShouldReturnFalse_WhenGroupUuidIsInvalid() {
+        Schedule schedule = defaultSchedule();
+        schedule.setGroup(schedule.getGroup()+"abc");
+        assertThat(validator.validate(schedule), Matchers.is(false));
+    }
+
+    @Test
+    void validate_ShouldReturnFalse_WhenTeacherUuidIsInvalid() {
+        Schedule schedule = defaultSchedule();
+        schedule.setTeacher(schedule.getTeacher()+"abc");
         assertThat(validator.validate(schedule), Matchers.is(false));
     }
 }

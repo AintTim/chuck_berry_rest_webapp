@@ -21,10 +21,22 @@ class StudentValidatorTest extends BaseServiceTest {
     }
 
     @Test
-    void validate_ShouldReturnTrue_WhenUuidISNull() {
+    void validate_ShouldReturnTrue_WhenUuidIsNull() {
         Student student = defaultStudent();
         student.setUuid(null);
         assertThat(validator.validate(student), Matchers.is(true));
+    }
+
+    @Test
+    void validate_ShouldReturnFalse_WhenUuidIsInvalid() {
+        Student student = defaultStudent();
+        student.setUuid(student.getUuid()+"abc");
+        assertThat(validator.validate(student), Matchers.is(false));
+    }
+
+    @Test
+    void validate_ShouldReturnFalse_WhenStudentISNull() {
+        assertThat(validator.validate(null), Matchers.is(true));
     }
 
     @Test

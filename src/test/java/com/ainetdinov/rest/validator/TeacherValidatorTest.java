@@ -21,7 +21,7 @@ class TeacherValidatorTest extends BaseServiceTest {
     }
 
     @Test
-     void validate_ShouldReturnTrue_WhenUuidISNull() {
+     void validate_ShouldReturnTrue_WhenUuidIsNull() {
         Teacher teacher = defaultTeacher();
         teacher.setUuid(null);
         assertThat(validator.validate(teacher), Matchers.is(true));
@@ -30,6 +30,13 @@ class TeacherValidatorTest extends BaseServiceTest {
     @Test
     void validate_ShouldReturnFalse_WhenTeacherIsNull() {
         assertThat(validator.validate(null), Matchers.is(false));
+    }
+
+    @Test
+    void validate_ShouldReturnFalse_WhenUuidIsInvalid() {
+        Teacher teacher = defaultTeacher();
+        teacher.setUuid(teacher.getUuid() + "abc");
+        assertThat(validator.validate(teacher), Matchers.is(false));
     }
 
     @Test
