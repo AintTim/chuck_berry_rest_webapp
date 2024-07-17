@@ -1,7 +1,7 @@
 package com.ainetdinov.rest.validator;
 
 import com.ainetdinov.rest.model.Schedule;
-import com.ainetdinov.rest.service.BaseServiceTest;
+import com.ainetdinov.rest.service.BaseTest;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-class ScheduleValidatorTest extends BaseServiceTest {
+class ScheduleValidatorTest extends BaseTest {
     private final ScheduleValidator validator = new ScheduleValidator();
 
     @Test

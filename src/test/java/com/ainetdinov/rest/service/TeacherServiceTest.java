@@ -17,7 +17,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class TeacherServiceTest extends BaseServiceTest{
+class TeacherServiceTest extends BaseTest {
     @Spy
     private ValidatorService<Teacher> validator;
 

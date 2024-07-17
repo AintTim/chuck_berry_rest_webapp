@@ -1,7 +1,7 @@
 package com.ainetdinov.rest.validator;
 
 import com.ainetdinov.rest.model.Teacher;
-import com.ainetdinov.rest.service.BaseServiceTest;
+import com.ainetdinov.rest.service.BaseTest;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-class TeacherValidatorTest extends BaseServiceTest {
+class TeacherValidatorTest extends BaseTest {
     private final TeacherValidator validator = new TeacherValidator();
 
     @Test

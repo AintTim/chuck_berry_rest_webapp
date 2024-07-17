@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BaseServiceTest {
+public class BaseTest {
 
     protected Student defaultStudent() {
         return Student.builder()

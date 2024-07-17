@@ -20,7 +20,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ScheduleServiceTest extends BaseServiceTest{
+class ScheduleServiceTest extends BaseTest {
 
     @Spy
     private ValidatorService<Schedule> validator;

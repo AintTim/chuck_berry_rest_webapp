@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class GroupServiceTest extends BaseServiceTest {
+class GroupServiceTest extends BaseTest {
     @Spy
     private ValidatorService<Group> validator;
     private final StudentService studentService = createStudentService();

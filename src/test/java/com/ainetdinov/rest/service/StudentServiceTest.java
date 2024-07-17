@@ -16,7 +16,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
 @ExtendWith(MockitoExtension.class)
-class StudentServiceTest extends BaseServiceTest{
+class StudentServiceTest extends BaseTest {
     @Spy
     private ValidatorService<Student> validator;
 
