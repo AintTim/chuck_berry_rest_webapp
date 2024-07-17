@@ -17,7 +17,6 @@ public class TeacherService extends EntityService<Teacher> {
 
     public boolean addTeacher(Teacher teacher) {
         log.info("New teacher: validation before add\n{}", teacher);
-        boolean v = validator.validate(teacher);
         if (validateEntity(teacher, validator::validate, this::isUnique)) {
             teacher.setUuid(generateUUID());
             entities.put(UUID.fromString(teacher.getUuid()), teacher);

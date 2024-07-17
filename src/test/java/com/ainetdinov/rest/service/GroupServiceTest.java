@@ -3,7 +3,6 @@ package com.ainetdinov.rest.service;
 import com.ainetdinov.rest.model.Group;
 import com.ainetdinov.rest.model.Student;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
@@ -11,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Predicate;
 
@@ -148,19 +148,13 @@ class GroupServiceTest {
         assertThat(filteredGroup, Matchers.nullValue(Group.class));
     }
 
-    private static ValidatorService<Group> createValidator() {
-        ValidatorService<Group> mock = mock(ValidatorService.class);
-        when(mock.validate(any(Group.class))).thenReturn(true);
-        return mock;
-    }
-
     private static StudentService createStudentService() {
         StudentService mock = mock(StudentService.class);
         Student student1 = defaultStudent();
         Student student2 = student1.toBuilder().name("Jane").uuid("30ef0869-d5fb-49c7-9b66-16c6bde79d9b").build();
-        ConcurrentMap<UUID, Student> students = (ConcurrentMap<UUID, Student>) Map.of(
+        ConcurrentMap<UUID, Student> students = new ConcurrentHashMap<>(Map.of(
                 UUID.fromString(student1.getUuid()), student1,
-                UUID.fromString(student2.getUuid()), student2);
+                UUID.fromString(student2.getUuid()), student2));
         when(mock.getEntities()).thenReturn(students);
         return mock;
     }

@@ -32,7 +32,6 @@ public class StudentService extends EntityService<Student> {
     public boolean addStudent(Student student) {
         synchronized (entities) {
             log.info("New student: validation before add\n{}", student);
-            boolean v = validator.validate(student);
             if (validateEntity(student, validator::validate, this::isUnique)) {
                 student.setUuid(generateUUID());
                 entities.put(UUID.fromString(student.getUuid()), student);
