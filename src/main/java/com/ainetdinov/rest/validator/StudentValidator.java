@@ -24,7 +24,7 @@ public class StudentValidator implements ValidatorService<Student> {
         if (isPresent) {
             return pattern.matcher(object.getName()).matches() && pattern.matcher(object.getSurname()).matches();
         } else {
-            return !pattern.matcher(object.getName()).matches() && !pattern.matcher(object.getSurname()).matches();
+            return !pattern.matcher(object.getName()).find() && !pattern.matcher(object.getSurname()).find();
         }
     }
 

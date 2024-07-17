@@ -26,7 +26,7 @@ public class TeacherValidator implements ValidatorService<Teacher> {
         if (isPresent) {
             return pattern.matcher(object.getName()).matches();
         } else {
-            return !pattern.matcher(object.getName()).matches();
+            return !pattern.matcher(object.getName()).find();
         }
     }
 

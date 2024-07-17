@@ -17,9 +17,9 @@ public class StudentService extends EntityService<Student> {
     public Student updateStudent(Student updatedStudent, UUID uuid) {
         synchronized (entities) {
             Student currentStudent = getEntity(uuid);
-            updatedStudent.setUuid(uuid.toString());
             log.info("Student {}: validation before update\ncurrent: {}\nupdated:{}", uuid, currentStudent, updatedStudent);
             if (validateEntity(updatedStudent, validator::validate) && validateEntity(currentStudent, Objects::nonNull)) {
+                updatedStudent.setUuid(uuid.toString());
                 entities.put(uuid, updatedStudent);
                 log.info("Student {}: updated", uuid);
                 return updatedStudent;
