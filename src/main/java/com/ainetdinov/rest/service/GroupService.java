@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Predicate;
 
 @Log4j2
@@ -19,7 +20,7 @@ public class GroupService extends EntityService<Group> {
     }
 
     @Override
-    public Map<UUID, Group> getEntities() {
+    public ConcurrentMap<UUID, Group> getEntities() {
         syncGroupStudents();
         return entities;
     }

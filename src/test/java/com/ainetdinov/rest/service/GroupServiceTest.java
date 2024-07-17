@@ -6,27 +6,24 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Predicate;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class GroupServiceTest {
+    @Spy
     private static ValidatorService<Group> validator;
-    private static StudentService studentService;
+    private static final StudentService studentService = createStudentService();
 
-    @BeforeAll
-    static void setup() {
-        validator = createValidator();
-        studentService = createStudentService();
-    }
     @Test
     void getEntities_shouldReturnMapOfGroupsWithUuid() {
         Group group = defaultGroup();
@@ -62,25 +59,45 @@ class GroupServiceTest {
     @Test
     void addGroup_shouldReturnTrue_WhenValidGroup() {
         Group group = defaultGroup();
-        GroupService groupService = new GroupService(List.of(group), validator, studentService);
+        GroupService groupService = spy(new GroupService(List.of(group), validator, studentService));
+        doReturn(true).when(validator).validate(any(Group.class));
+        doReturn(true).when(groupService).isUnique(any(Group.class));
+
         Student student = defaultStudent().toBuilder().name("Jane").build();
         Group additionalGroup = group.toBuilder().number("2").students(List.of(student)).build();
+
         assertThat(groupService.addGroup(additionalGroup), Matchers.is(true));
     }
 
     @Test
-    void addGroup_shouldReturnFalse_WhenAddingExistingGroup() {
+    void addGroup_shouldReturnFalse_WhenAddingInvalidGroup() {
         Group group = defaultGroup();
-        GroupService groupService = new GroupService(List.of(group), validator, studentService);
+        GroupService groupService = spy(new GroupService(List.of(group), validator, studentService));
+        doReturn(false).when(validator).validate(any(Group.class));
+
+        assertThat(groupService.addGroup(group), Matchers.is(false));
+    }
+
+    @Test
+    void addGroup_shouldReturnFalse_WhenAddingNotUniqueGroup() {
+        Group group = defaultGroup();
+        GroupService groupService = spy(new GroupService(List.of(group), validator, studentService));
+        doReturn(true).when(validator).validate(any(Group.class));
+        doReturn(false).when(groupService).isUnique(any(Group.class));
+
         assertThat(groupService.addGroup(group), Matchers.is(false));
     }
 
     @Test
     void addGroup_shouldReturnFalse_WhenAddingGroupWithNonRegisteredStudent() {
         Group group = defaultGroup();
-        GroupService groupService = new GroupService(List.of(group), validator, studentService);
+        GroupService groupService = spy(new GroupService(List.of(group), validator, studentService));
+        doReturn(true).when(validator).validate(any(Group.class));
+        doReturn(true).when(groupService).isUnique(any(Group.class));
+
         Student student = defaultStudent().toBuilder().name("Error").build();
         Group additionalGroup = group.toBuilder().number("2").students(List.of(student)).build();
+
         assertThat(groupService.addGroup(additionalGroup), Matchers.is(false));
     }
 
@@ -141,7 +158,7 @@ class GroupServiceTest {
         StudentService mock = mock(StudentService.class);
         Student student1 = defaultStudent();
         Student student2 = student1.toBuilder().name("Jane").uuid("30ef0869-d5fb-49c7-9b66-16c6bde79d9b").build();
-        Map<UUID, Student> students = Map.of(
+        ConcurrentMap<UUID, Student> students = (ConcurrentMap<UUID, Student>) Map.of(
                 UUID.fromString(student1.getUuid()), student1,
                 UUID.fromString(student2.getUuid()), student2);
         when(mock.getEntities()).thenReturn(students);

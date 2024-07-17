@@ -16,30 +16,27 @@ public class TeacherService extends EntityService<Teacher> {
     }
 
     public boolean addTeacher(Teacher teacher) {
-        synchronized (entities) {
-            log.info("New teacher {}: validation before add\n{}", teacher.getName(), teacher);
-            if (validateEntity(teacher, validator::validate, this::isUnique)) {
-                teacher.setUuid(generateUUID());
-                entities.put(UUID.fromString(teacher.getUuid()), teacher);
-                log.info("Teacher {}: added", teacher.getUuid());
-                return true;
-            } else {
-                return false;
-            }
+        log.info("New teacher: validation before add\n{}", teacher);
+        boolean v = validator.validate(teacher);
+        if (validateEntity(teacher, validator::validate, this::isUnique)) {
+            teacher.setUuid(generateUUID());
+            entities.put(UUID.fromString(teacher.getUuid()), teacher);
+            log.info("Teacher {}: added", teacher.getUuid());
+            return true;
+        } else {
+            return false;
         }
     }
 
     public List<Subject> updateTeacherSubjects(List<Subject> subjects, UUID uuid) {
         Teacher teacher = getEntity(uuid);
-        synchronized (entities) {
-            log.info("Subjects validation before update\n{}", subjects);
-            if (!subjects.isEmpty() && Objects.nonNull(teacher)) {
-                teacher.setSubjects(subjects);
-                log.info("Teacher {}: subjects updated", teacher.getUuid());
-                return teacher.getSubjects();
-            } else {
-                return null;
-            }
+        log.info("Subjects validation before update\n{}", subjects);
+        if (!subjects.isEmpty() && Objects.nonNull(teacher)) {
+            teacher.setSubjects(subjects);
+            log.info("Teacher {}: subjects updated", teacher.getUuid());
+            return teacher.getSubjects();
+        } else {
+            return null;
         }
     }
 }

@@ -4,13 +4,15 @@ import com.ainetdinov.rest.model.Entity;
 import lombok.Getter;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Getter
 public abstract class EntityService<T extends Entity> {
-    protected final Map<UUID, T> entities;
+    protected final ConcurrentMap<UUID, T> entities;
     protected final ValidatorService<T> validator;
 
     public EntityService(List<T> entities, ValidatorService<T> validator) {
@@ -54,8 +56,8 @@ public abstract class EntityService<T extends Entity> {
         return Arrays.stream(filters).allMatch(filter -> filter.test(entity));
     }
 
-    private Map<UUID, T> initEntities(List<T> entities) {
-        return entities.stream()
-                .collect(Collectors.toMap(e -> UUID.fromString(e.getUuid()), Function.identity()));
+    private ConcurrentMap<UUID, T> initEntities(List<T> entities) {
+        return new ConcurrentHashMap<>(entities.stream()
+                .collect(Collectors.toMap(e -> UUID.fromString(e.getUuid()), Function.identity())));
     }
 }
