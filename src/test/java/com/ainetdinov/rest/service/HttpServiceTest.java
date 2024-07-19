@@ -18,6 +18,7 @@ import java.util.function.Predicate;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
+
 @ExtendWith(MockitoExtension.class)
 class HttpServiceTest extends BaseTest{
     @Mock
@@ -48,9 +49,10 @@ class HttpServiceTest extends BaseTest{
         doNothing().when(response).setStatus(anyInt());
         doReturn(new PrintWriter("writer")).when(response).getWriter();
 
-        httpService.writeResponse(response, defaultStudent());
+        httpService.writeResponse(response, defaultStudent(), HttpServletResponse.SC_NOT_FOUND);
         verify(response, times(1)).getWriter();
         verify(response, times(1)).setStatus(HttpServletResponse.SC_OK);
+        verify(response, never()).setStatus(HttpServletResponse.SC_NOT_FOUND);
     }
 
     @Test
@@ -59,7 +61,7 @@ class HttpServiceTest extends BaseTest{
 
         doNothing().when(response).setStatus(anyInt());
 
-        httpService.writeResponse(response, null);
+        httpService.writeResponse(response, null, HttpServletResponse.SC_NOT_FOUND);
         verify(response, never()).getWriter();
         verify(response, times(1)).setStatus(HttpServletResponse.SC_NOT_FOUND);
     }
