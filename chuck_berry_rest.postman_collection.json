@@ -1,0 +1,391 @@
+{
+	"info": {
+		"_postman_id": "a01190b5-90ef-49fd-933a-f9c3f8984c78",
+		"name": "chuck_berry_rest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "31870941"
+	},
+	"item": [
+		{
+			"name": "student",
+			"item": [
+				{
+					"name": "getStudents",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/students"
+					},
+					"response": []
+				},
+				{
+					"name": "getStudentById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/students/9e54d252-6817-40f9-8d7a-6df87b2ce9a5"
+					},
+					"response": []
+				},
+				{
+					"name": "getStudentsBySurname",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/students?surname=Doe",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"students"
+							],
+							"query": [
+								{
+									"key": "surname",
+									"value": "Doe"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createStudent",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"George\",\r\n    \"surname\": \"Doe\",\r\n    \"birthDate\": \"1995-02-13\",\r\n    \"phoneNumber\": \"+7 999 888-77-55\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/students"
+					},
+					"response": []
+				},
+				{
+					"name": "deleteStudent",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/students/9e54d252-6817-40f9-8d7a-6df87b2ce9a5"
+					},
+					"response": []
+				},
+				{
+					"name": "updateStudent",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Jacob\",\r\n    \"surname\": \"Doe\",\r\n    \"birthDate\": \"1995-06-15\",\r\n    \"phoneNumber\": \"+375 96 888-77-66\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/students/9cb94fbc-d856-4ff2-8228-42499017ecc5"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "teacher",
+			"item": [
+				{
+					"name": "getTeachers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/teachers"
+					},
+					"response": []
+				},
+				{
+					"name": "updateTeacherSubjects",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/teachers/aa626cb8-ec3c-4901-919f-482940635b82?subjects=MATH&subjects=LANGUAGE",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"teachers",
+								"aa626cb8-ec3c-4901-919f-482940635b82"
+							],
+							"query": [
+								{
+									"key": "subjects",
+									"value": "MATH"
+								},
+								{
+									"key": "subjects",
+									"value": "LANGUAGE"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "group",
+			"item": [
+				{
+					"name": "getGroups",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/groups"
+					},
+					"response": []
+				},
+				{
+					"name": "getGroupByNumber",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/groups?number=166",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"groups"
+							],
+							"query": [
+								{
+									"key": "number",
+									"value": "166"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getGroupsBySurname",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/groups?surname=Doe",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"groups"
+							],
+							"query": [
+								{
+									"key": "surname",
+									"value": "Doe"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createGroup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"number\": \"6\",\r\n    \"students\": [\r\n      {\r\n        \"uuid\": \"78a73f2a-2c86-4359-ac55-0042903cf83d\",\r\n        \"name\": \"George\",\r\n        \"surname\": \"Doe\",\r\n        \"birthDate\": \"1995-02-13\",\r\n        \"phoneNumber\": \"+7 999 888-77-55\"\r\n      }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/groups"
+					},
+					"response": []
+				},
+				{
+					"name": "addStudentsToGroup",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n    \"uuid\": \"48d072de-38cb-478d-bd32-bd9781c0b795\",\r\n    \"name\": \"Mark\",\r\n    \"surname\": \"Doe\",\r\n    \"birthDate\": \"1995-02-13\",\r\n    \"phoneNumber\": \"+7 999 888-77-55\"\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/groups/3df8d0cb-e008-4047-89bd-497055a55978"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "schedule",
+			"item": [
+				{
+					"name": "getSchedules",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/schedules"
+					},
+					"response": []
+				},
+				{
+					"name": "getSchedulesByGroup",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/schedules?groupNumber=200",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"schedules"
+							],
+							"query": [
+								{
+									"key": "groupNumber",
+									"value": "200"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getSchedulesByTeacher",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/schedules?teacherName=Zakariya",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"schedules"
+							],
+							"query": [
+								{
+									"key": "teacherName",
+									"value": "Zakariya"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getSchedulesByStudent",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/schedules?studentName=John&studentSurname=Doe",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"schedules"
+							],
+							"query": [
+								{
+									"key": "studentName",
+									"value": "John"
+								},
+								{
+									"key": "studentSurname",
+									"value": "Doe"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getSchedulesByDate",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/schedules?date=07/06/2025",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"schedules"
+							],
+							"query": [
+								{
+									"key": "date",
+									"value": "07/06/2025"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateSchedule",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"uuid\": \"c1fb5484-03aa-4b4d-b837-65884bc6bb96\",\r\n        \"start\": \"2025-06-07 20:00\",\r\n        \"end\": \"2025-06-07 22:00\",\r\n        \"group\": \"b6710cae-60ed-4946-a770-c30a6f79a9d1\",\r\n        \"teacher\": \"8c0f90ad-0a5a-4396-bd3f-18bc66d0bd17\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/schedules/c1fb5484-03aa-4b4d-b837-65884bc6bb96"
+					},
+					"response": []
+				},
+				{
+					"name": "addSchedule",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"start\": \"2025-06-07 13:00\",\r\n        \"end\": \"2025-06-07 15:30\",\r\n        \"group\": \"b6710cae-60ed-4946-a770-c30a6f79a9d1\",\r\n        \"teacher\": \"8c0f90ad-0a5a-4396-bd3f-18bc66d0bd17\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/schedules"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080/Gradle___com_ainetdinov___rest_1_0_SNAPSHOT_war/"
+		}
+	]
+}
