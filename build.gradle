@@ -45,8 +45,6 @@ dependencies {
     testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter-params:${junitParamsVersion}"
 
-
-
     annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
@@ -60,7 +58,6 @@ test {
 
 jacoco {
     toolVersion = "0.8.9"
-    reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir')
 }
 
 jacocoTestReport {
@@ -68,6 +65,6 @@ jacocoTestReport {
     reports {
         xml.required = true
         csv.required = false
-        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+        html.outputLocation = layout.buildDirectory.dir("jacocoHtml")
     }
 }
