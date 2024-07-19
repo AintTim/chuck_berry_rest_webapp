@@ -34,12 +34,11 @@ public class ParsingService {
             CollectionType returnType = mapper.getTypeFactory().constructCollectionType(List.class, clazz);
             if (Files.exists(source)) {
                 return mapper.readValue(source.toFile(), returnType);
-            } else {
-                throw new FileNotFoundException(String.format("File %s not found", source));
             }
         } catch (IOException e) {
             throw new RuntimeException(String.format("Error reading file %s from %s", source, e));
         }
+        return null;
     }
 
     public <T> T parse(String jsonBody, TypeReference<T> typeReference) {
