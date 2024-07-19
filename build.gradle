@@ -67,4 +67,16 @@ jacocoTestReport {
         csv.required = false
         html.outputLocation = layout.buildDirectory.dir("jacocoHtml")
     }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, excludes: [
+                    "com/ainetdinov/**/Endpoint.class",
+                    "com/ainetdinov/**/ScheduleQuery.class",
+                    "com/ainetdinov/**/WebConstant.class",
+                    "**/model",
+                    "**/listener"
+            ])
+        }))
+    }
 }
