@@ -16,6 +16,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -27,6 +28,7 @@ import java.util.function.Predicate;
 
 import static com.ainetdinov.rest.constant.Endpoint.*;
 
+@Log4j2
 @WebServlet(SLASH + SCHEDULES + SLASH + ASTERISK)
 public class ScheduleServlet extends HttpServlet {
     private ScheduleService scheduleService;
@@ -71,6 +73,7 @@ public class ScheduleServlet extends HttpServlet {
         if (preconditionService.validateGroupSchedule(schedule, scheduleService)) {
             httpService.writeResponse(resp, schedule, scheduleService::addSchedule, HttpServletResponse.SC_OK, HttpServletResponse.SC_BAD_REQUEST);
         } else {
+            log.warn("Group schedule load exceeds the limit");
             httpService.writeResponse(resp, null, HttpServletResponse.SC_BAD_REQUEST);
         }
     }
@@ -79,10 +82,11 @@ public class ScheduleServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
         Schedule schedule = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
-        Schedule updatedSchedule = scheduleService.updateSchedule(schedule, httpService.extractUUID(req));
-        if (preconditionService.validateGroupSchedule(updatedSchedule, scheduleService)) {
+        if (preconditionService.validateGroupSchedule(schedule, scheduleService)) {
+            Schedule updatedSchedule = scheduleService.updateSchedule(schedule, httpService.extractUUID(req));
             httpService.writeResponse(resp, updatedSchedule, Objects::nonNull, HttpServletResponse.SC_OK, HttpServletResponse.SC_NOT_FOUND);
         } else {
+            log.warn("Updated group schedule load exceeds the limit");
             httpService.writeResponse(resp, null, HttpServletResponse.SC_BAD_REQUEST);
         }
     }

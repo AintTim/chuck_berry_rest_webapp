@@ -14,16 +14,17 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Properties;
 import java.util.function.Predicate;
 
 import static com.ainetdinov.rest.constant.Endpoint.*;
 
+@Log4j2
 @WebServlet(SLASH + GROUPS + SLASH + ASTERISK)
 public class GroupServlet extends HttpServlet {
     private GroupService groupService;
@@ -58,9 +59,10 @@ public class GroupServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
         Group group = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
-        if (preconditionService.validateGroupSize(group)) {
+        if (preconditionService.validateGroupAdd(group)) {
             httpService.writeResponse(resp, group, groupService::addGroup, HttpServletResponse.SC_CREATED, HttpServletResponse.SC_BAD_REQUEST);
         } else {
+            log.warn("Number of group students {} exceeds the limit", group.getStudents().size());
             httpService.writeResponse(resp, null, HttpServletResponse.SC_BAD_REQUEST);
         }
     }
@@ -69,10 +71,12 @@ public class GroupServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
         List<Student> students = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
-        Group updatedGroup = groupService.addStudentsToGroup(students, httpService.extractUUID(req));
-        if (preconditionService.validateGroupSize(updatedGroup)) {
+        Group group = groupService.getEntity(httpService.extractUUID(req));
+        if (preconditionService.validateGroupUpdate(students, group)) {
+            Group updatedGroup = groupService.addStudentsToGroup(students, httpService.extractUUID(req));
             httpService.writeResponse(resp, updatedGroup, HttpServletResponse.SC_NOT_FOUND);
         } else {
+            log.warn("Number of updated group students {} exceeds the limit", group.getStudents().size() + students.size());
             httpService.writeResponse(resp, null, HttpServletResponse.SC_BAD_REQUEST);
         }
     }
