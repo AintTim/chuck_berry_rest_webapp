@@ -1,4 +1,4 @@
-Docker repo link: `docker pull ainttim/dockerhub`
+Docker repo link: `docker pull ainttim/dockerhub:chuck_berry_rest`
 
 Настраиваемые параметры размещены в файле `settings.properties`
 
