@@ -1,19 +1,18 @@
 package com.ainetdinov.rest.service;
 
-import com.ainetdinov.rest.model.Group;
 import com.ainetdinov.rest.model.Student;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.hamcrest.Matchers;
-import org.hamcrest.TypeSafeMatcher;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ExtendWith(MockitoExtension.class)
 class ParsingServiceTest extends BaseTest {
     private static final String validPath = "src/main/webapp/WEB-INF/resources/students.json";
 
