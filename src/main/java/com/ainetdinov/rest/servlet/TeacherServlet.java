@@ -40,7 +40,7 @@ public class TeacherServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
-        httpService.writeResponse(resp, new ArrayList<>(teacherService.getEntities().values()));
+        httpService.writeResponse(resp, new ArrayList<>(teacherService.getEntities().values()), HttpServletResponse.SC_NOT_FOUND);
     }
 
     @Override

@@ -31,12 +31,12 @@ public class HttpService {
         }
     }
 
-    public void writeResponse(HttpServletResponse response, Object object) throws IOException {
+    public void writeResponse(HttpServletResponse response, Object object, int invalidStatus) throws IOException {
         if (Objects.nonNull(object)) {
             response.getWriter().write(object.toString());
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            response.setStatus(invalidStatus);
         }
     }
 

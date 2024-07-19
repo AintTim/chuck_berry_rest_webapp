@@ -44,6 +44,7 @@ public class AppContextListener implements ServletContextListener {
         context.setAttribute(WebConstant.GROUP_SERVICE, groupService);
         context.setAttribute(WebConstant.SCHEDULE_SERVICE, scheduleService);
         context.setAttribute(WebConstant.HTTP_SERVICE, new HttpService(new HttpValidator()));
+        context.setAttribute(WebConstant.PRECONDITION_SERVICE, new PreconditionService(properties));
 
         ServletContextListener.super.contextInitialized(sce);
     }

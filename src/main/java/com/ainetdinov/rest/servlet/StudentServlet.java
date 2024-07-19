@@ -44,7 +44,7 @@ public class StudentServlet extends HttpServlet {
         } else if (httpService.containsQueryString(req)) {
             getStudentsBySurname(req, resp);
         } else {
-            httpService.writeResponse(resp, new ArrayList<>(studentService.getEntities().values()));
+            httpService.writeResponse(resp, new ArrayList<>(studentService.getEntities().values()), HttpServletResponse.SC_NOT_FOUND);
         }
     }
 
@@ -77,7 +77,7 @@ public class StudentServlet extends HttpServlet {
         if (httpService.containsPath(req)) {
             Student student = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
             Student updatedStudent = studentService.updateStudent(student, uuid);
-            httpService.writeResponse(resp, updatedStudent);
+            httpService.writeResponse(resp, updatedStudent, HttpServletResponse.SC_NOT_FOUND);
         } else {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
@@ -85,7 +85,7 @@ public class StudentServlet extends HttpServlet {
 
     private void getStudentById(UUID uuid, HttpServletResponse response) throws IOException {
         Student student = studentService.getEntity(uuid);
-        httpService.writeResponse(response, student);
+        httpService.writeResponse(response, student, HttpServletResponse.SC_NOT_FOUND);
     }
 
     private void getStudentsBySurname(HttpServletRequest request, HttpServletResponse response) throws IOException {

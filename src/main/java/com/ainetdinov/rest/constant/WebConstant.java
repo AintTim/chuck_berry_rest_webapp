@@ -10,6 +10,11 @@ public class WebConstant {
     public static final String SCHEDULE_SERVICE = "scheduleService";
     public static final String HTTP_SERVICE = "httpService";
     public static final String PARSER_SERVICE = "parserService";
+    public static final String PRECONDITION_SERVICE = "preconditionService";
+
+    public static final String MAX_GROUP_SIZE = "max.group.size";
+    public static final String MIN_GROUP_SIZE = "min.group.size";
+    public static final String MAX_GROUP_SCHEDULE_LOAD = "max.group.schedule";
 
     public static final String NUMBER = "number";
     public static final String SURNAME = "surname";

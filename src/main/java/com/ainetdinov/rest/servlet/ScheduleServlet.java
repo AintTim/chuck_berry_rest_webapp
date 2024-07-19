@@ -7,6 +7,7 @@ import com.ainetdinov.rest.model.Schedule;
 import com.ainetdinov.rest.model.Teacher;
 import com.ainetdinov.rest.service.HttpService;
 import com.ainetdinov.rest.service.ParsingService;
+import com.ainetdinov.rest.service.PreconditionService;
 import com.ainetdinov.rest.service.ScheduleService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.servlet.ServletConfig;
@@ -31,6 +32,7 @@ public class ScheduleServlet extends HttpServlet {
     private ScheduleService scheduleService;
     private HttpService httpService;
     private ParsingService parsingService;
+    private PreconditionService preconditionService;
 
     @Override
     public void init(ServletConfig config) {
@@ -38,6 +40,7 @@ public class ScheduleServlet extends HttpServlet {
         scheduleService = (ScheduleService) context.getAttribute(WebConstant.SCHEDULE_SERVICE);
         httpService = (HttpService) context.getAttribute(WebConstant.HTTP_SERVICE);
         parsingService = (ParsingService) context.getAttribute(WebConstant.PARSER_SERVICE);
+        preconditionService  = (PreconditionService) context.getAttribute(WebConstant.PRECONDITION_SERVICE);
     }
 
     @Override
@@ -65,18 +68,22 @@ public class ScheduleServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
         Schedule schedule = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
-        httpService.writeResponse(resp, schedule, scheduleService::addSchedule, HttpServletResponse.SC_OK, HttpServletResponse.SC_BAD_REQUEST);
+        if (preconditionService.validateGroupSchedule(schedule, scheduleService)) {
+            httpService.writeResponse(resp, schedule, scheduleService::addSchedule, HttpServletResponse.SC_OK, HttpServletResponse.SC_BAD_REQUEST);
+        } else {
+            httpService.writeResponse(resp, null, HttpServletResponse.SC_BAD_REQUEST);
+        }
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
         Schedule schedule = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
-        if (Objects.nonNull(schedule)) {
-            Schedule updatedSchedule = scheduleService.updateSchedule(schedule, httpService.extractUUID(req));
+        Schedule updatedSchedule = scheduleService.updateSchedule(schedule, httpService.extractUUID(req));
+        if (preconditionService.validateGroupSchedule(updatedSchedule, scheduleService)) {
             httpService.writeResponse(resp, updatedSchedule, Objects::nonNull, HttpServletResponse.SC_OK, HttpServletResponse.SC_NOT_FOUND);
         } else {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            httpService.writeResponse(resp, null, HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 

@@ -6,6 +6,7 @@ import com.ainetdinov.rest.model.Student;
 import com.ainetdinov.rest.service.GroupService;
 import com.ainetdinov.rest.service.HttpService;
 import com.ainetdinov.rest.service.ParsingService;
+import com.ainetdinov.rest.service.PreconditionService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.function.Predicate;
 
 import static com.ainetdinov.rest.constant.Endpoint.*;
@@ -27,6 +29,7 @@ public class GroupServlet extends HttpServlet {
     private GroupService groupService;
     private HttpService httpService;
     private ParsingService parsingService;
+    private PreconditionService preconditionService;
 
     @Override
     public void init(ServletConfig config) {
@@ -34,6 +37,7 @@ public class GroupServlet extends HttpServlet {
         groupService = (GroupService) context.getAttribute(WebConstant.GROUP_SERVICE);
         httpService = (HttpService) context.getAttribute(WebConstant.HTTP_SERVICE);
         parsingService = (ParsingService) context.getAttribute(WebConstant.PARSER_SERVICE);
+        preconditionService  = (PreconditionService) context.getAttribute(WebConstant.PRECONDITION_SERVICE);
     }
 
     @Override
@@ -46,7 +50,7 @@ public class GroupServlet extends HttpServlet {
                 getGroupByStudentSurname(req, resp);
             }
         } else {
-            httpService.writeResponse(resp, new ArrayList<>(groupService.getEntities().values()));
+            httpService.writeResponse(resp, new ArrayList<>(groupService.getEntities().values()), HttpServletResponse.SC_NOT_FOUND);
         }
     }
 
@@ -54,7 +58,11 @@ public class GroupServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
         Group group = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
-        httpService.writeResponse(resp, group, groupService::addGroup, HttpServletResponse.SC_CREATED, HttpServletResponse.SC_BAD_REQUEST);
+        if (preconditionService.validateGroupSize(group)) {
+            httpService.writeResponse(resp, group, groupService::addGroup, HttpServletResponse.SC_CREATED, HttpServletResponse.SC_BAD_REQUEST);
+        } else {
+            httpService.writeResponse(resp, null, HttpServletResponse.SC_BAD_REQUEST);
+        }
     }
 
     @Override
@@ -62,13 +70,17 @@ public class GroupServlet extends HttpServlet {
         httpService.prepareResponse(resp);
         List<Student> students = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
         Group updatedGroup = groupService.addStudentsToGroup(students, httpService.extractUUID(req));
-        httpService.writeResponse(resp, updatedGroup);
+        if (preconditionService.validateGroupSize(updatedGroup)) {
+            httpService.writeResponse(resp, updatedGroup, HttpServletResponse.SC_NOT_FOUND);
+        } else {
+            httpService.writeResponse(resp, null, HttpServletResponse.SC_BAD_REQUEST);
+        }
     }
 
     private void getGroupByNumber(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String number = req.getParameter(WebConstant.NUMBER);
         Group group = groupService.getEntity(g -> g.getNumber().equals(number));
-        httpService.writeResponse(resp, group);
+        httpService.writeResponse(resp, group, HttpServletResponse.SC_NOT_FOUND);
     }
 
     private void getGroupByStudentSurname(HttpServletRequest req, HttpServletResponse resp) throws IOException {
