@@ -116,21 +116,21 @@ class HttpServiceTest extends BaseTest{
     void containsPath_ShouldReturnTrue_WhenPathIsPresent() {
         HttpServletRequest request = mock(HttpServletRequest.class);
         doReturn("path").when(request).getPathInfo();
-        assertThat(httpService.containsQueryString(request), Matchers.is(true));
+        assertThat(httpService.containsPath(request), Matchers.is(true));
     }
 
     @Test
-    void containsQueryString_ShouldReturnFalse_WhenPathIsNull() {
+    void containsPath_ShouldReturnFalse_WhenPathIsNull() {
         HttpServletRequest request = mock(HttpServletRequest.class);
         doReturn(null).when(request).getPathInfo();
-        assertThat(httpService.containsQueryString(request), Matchers.is(false));
+        assertThat(httpService.containsPath(request), Matchers.is(false));
     }
 
     @Test
-    void containsQueryString_ShouldReturnFalse_WhenPathIsEmpty() {
+    void containsPath_ShouldReturnFalse_WhenPathIsEmpty() {
         HttpServletRequest request = mock(HttpServletRequest.class);
         doReturn("").when(request).getPathInfo();
-        assertThat(httpService.containsQueryString(request), Matchers.is(false));
+        assertThat(httpService.containsPath(request), Matchers.is(false));
     }
 
     @Test

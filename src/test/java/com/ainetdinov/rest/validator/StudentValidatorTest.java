@@ -36,7 +36,7 @@ class StudentValidatorTest extends BaseTest {
 
     @Test
     void validate_ShouldReturnFalse_WhenStudentISNull() {
-        assertThat(validator.validate(null), Matchers.is(true));
+        assertThat(validator.validate(null), Matchers.is(false));
     }
 
     @Test
