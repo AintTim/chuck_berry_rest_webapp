@@ -49,21 +49,21 @@ class ScheduleValidatorTest extends BaseTest {
     @Test
     void validate_ShouldReturnFalse_WhenScheduleUuidIsInvalid() {
         Schedule schedule = defaultSchedule();
-        schedule.setUuid(schedule.getUuid()+"abc");
+        schedule.setUuid(schedule.getUuid() + "abc");
         assertThat(validator.validate(schedule), Matchers.is(false));
     }
 
     @Test
     void validate_ShouldReturnFalse_WhenGroupUuidIsInvalid() {
         Schedule schedule = defaultSchedule();
-        schedule.setGroup(schedule.getGroup()+"abc");
+        schedule.setGroup(schedule.getGroup() + "abc");
         assertThat(validator.validate(schedule), Matchers.is(false));
     }
 
     @Test
     void validate_ShouldReturnFalse_WhenTeacherUuidIsInvalid() {
         Schedule schedule = defaultSchedule();
-        schedule.setTeacher(schedule.getTeacher()+"abc");
+        schedule.setTeacher(schedule.getTeacher() + "abc");
         assertThat(validator.validate(schedule), Matchers.is(false));
     }
 }

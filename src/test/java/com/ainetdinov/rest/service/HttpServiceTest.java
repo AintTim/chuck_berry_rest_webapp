@@ -20,7 +20,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class HttpServiceTest extends BaseTest{
+class HttpServiceTest extends BaseTest {
     @Mock
     HttpValidator validator;
     @InjectMocks

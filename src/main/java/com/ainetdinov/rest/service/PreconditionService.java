@@ -13,7 +13,7 @@ import java.util.Properties;
 public class PreconditionService {
     private final Properties properties;
 
-    public  PreconditionService(Properties properties) {
+    public PreconditionService(Properties properties) {
         this.properties = properties;
     }
 

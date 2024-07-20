@@ -46,7 +46,8 @@ public class TeacherServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
-        Teacher teacher = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
+        Teacher teacher = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>() {
+        });
         httpService.writeResponse(resp, teacher, teacherService::addTeacher, HttpServletResponse.SC_OK, HttpServletResponse.SC_BAD_REQUEST);
     }
 

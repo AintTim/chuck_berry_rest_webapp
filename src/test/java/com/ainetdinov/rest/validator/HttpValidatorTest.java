@@ -8,7 +8,8 @@ import java.util.UUID;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 class HttpValidatorTest {
-    private HttpValidator validator = new HttpValidator();
+    private final HttpValidator validator = new HttpValidator();
+
     @Test
     void validate_ShouldReturnTrue_WhenValidString() {
         assertThat(validator.validate(UUID.randomUUID().toString()), Matchers.is(true));
