@@ -51,7 +51,8 @@ public class StudentServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
-        Student student = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
+        Student student = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>() {
+        });
         httpService.writeResponse(resp, student, studentService::addStudent, HttpServletResponse.SC_CREATED, HttpServletResponse.SC_BAD_REQUEST);
     }
 
@@ -75,7 +76,8 @@ public class StudentServlet extends HttpServlet {
         httpService.prepareResponse(resp);
         UUID uuid = httpService.extractUUID(req);
         if (httpService.containsPath(req)) {
-            Student student = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
+            Student student = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>() {
+            });
             Student updatedStudent = studentService.updateStudent(student, uuid);
             httpService.writeResponse(resp, updatedStudent, HttpServletResponse.SC_NOT_FOUND);
         } else {

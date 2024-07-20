@@ -21,7 +21,7 @@ class TeacherValidatorTest extends BaseTest {
     }
 
     @Test
-     void validate_ShouldReturnTrue_WhenUuidIsNull() {
+    void validate_ShouldReturnTrue_WhenUuidIsNull() {
         Teacher teacher = defaultTeacher();
         teacher.setUuid(null);
         assertThat(validator.validate(teacher), Matchers.is(true));

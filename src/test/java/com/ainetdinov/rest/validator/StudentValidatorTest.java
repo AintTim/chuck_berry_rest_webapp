@@ -30,7 +30,7 @@ class StudentValidatorTest extends BaseTest {
     @Test
     void validate_ShouldReturnFalse_WhenUuidIsInvalid() {
         Student student = defaultStudent();
-        student.setUuid(student.getUuid()+"abc");
+        student.setUuid(student.getUuid() + "abc");
         assertThat(validator.validate(student), Matchers.is(false));
     }
 

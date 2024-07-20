@@ -46,7 +46,7 @@ class GroupServiceTest extends BaseTest {
     void getEntity_shouldReturnValidGroupByPredicate() {
         Group group = defaultGroup();
         GroupService groupService = new GroupService(List.of(group), validator, studentService);
-        Predicate<Group> condition = g-> g.getNumber().equals("1");
+        Predicate<Group> condition = g -> g.getNumber().equals("1");
         assertThat(groupService.getEntity(condition), Matchers.equalTo(group));
     }
 
@@ -54,7 +54,7 @@ class GroupServiceTest extends BaseTest {
     void getEntities_shouldReturnValidGroupsByPredicate() {
         Group group = defaultGroup();
         GroupService groupService = new GroupService(List.of(group), validator, studentService);
-        Predicate<Group> condition = g-> g.getNumber().equals("1");
+        Predicate<Group> condition = g -> g.getNumber().equals("1");
         assertThat(groupService.getEntities(condition), Matchers.equalTo(List.of(group)));
     }
 

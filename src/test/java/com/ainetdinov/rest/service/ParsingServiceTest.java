@@ -33,13 +33,15 @@ class ParsingServiceTest extends BaseTest {
     void parse_ShouldReturnParsedStudent_WhenValidJsonString() {
         ParsingService service = new ParsingService();
         Student student = defaultStudent();
-        assertThat(service.parse(student.toString(), new TypeReference<>() {}), Matchers.equalTo(student));
+        assertThat(service.parse(student.toString(), new TypeReference<>() {
+        }), Matchers.equalTo(student));
     }
 
     @Test
     void parse_ShouldReturnNull_WhenInvalidJsonString() {
         ParsingService service = new ParsingService();
         Student student = defaultStudent();
-        assertThat(service.parse(student.toString() + "]", new TypeReference<>() {}), Matchers.nullValue());
+        assertThat(service.parse(student.toString() + "]", new TypeReference<>() {
+        }), Matchers.nullValue());
     }
 }

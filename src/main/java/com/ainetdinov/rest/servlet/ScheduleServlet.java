@@ -42,7 +42,7 @@ public class ScheduleServlet extends HttpServlet {
         scheduleService = (ScheduleService) context.getAttribute(WebConstant.SCHEDULE_SERVICE);
         httpService = (HttpService) context.getAttribute(WebConstant.HTTP_SERVICE);
         parsingService = (ParsingService) context.getAttribute(WebConstant.PARSER_SERVICE);
-        preconditionService  = (PreconditionService) context.getAttribute(WebConstant.PRECONDITION_SERVICE);
+        preconditionService = (PreconditionService) context.getAttribute(WebConstant.PRECONDITION_SERVICE);
     }
 
     @Override
@@ -69,7 +69,8 @@ public class ScheduleServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
-        Schedule schedule = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
+        Schedule schedule = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>() {
+        });
         if (preconditionService.validateGroupSchedule(schedule, scheduleService)) {
             httpService.writeResponse(resp, schedule, scheduleService::addSchedule, HttpServletResponse.SC_OK, HttpServletResponse.SC_BAD_REQUEST);
         } else {
@@ -81,7 +82,8 @@ public class ScheduleServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
-        Schedule schedule = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
+        Schedule schedule = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>() {
+        });
         if (preconditionService.validateGroupSchedule(schedule, scheduleService)) {
             Schedule updatedSchedule = scheduleService.updateSchedule(schedule, httpService.extractUUID(req));
             httpService.writeResponse(resp, updatedSchedule, Objects::nonNull, HttpServletResponse.SC_OK, HttpServletResponse.SC_NOT_FOUND);

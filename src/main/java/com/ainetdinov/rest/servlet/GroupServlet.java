@@ -38,7 +38,7 @@ public class GroupServlet extends HttpServlet {
         groupService = (GroupService) context.getAttribute(WebConstant.GROUP_SERVICE);
         httpService = (HttpService) context.getAttribute(WebConstant.HTTP_SERVICE);
         parsingService = (ParsingService) context.getAttribute(WebConstant.PARSER_SERVICE);
-        preconditionService  = (PreconditionService) context.getAttribute(WebConstant.PRECONDITION_SERVICE);
+        preconditionService = (PreconditionService) context.getAttribute(WebConstant.PRECONDITION_SERVICE);
     }
 
     @Override
@@ -58,7 +58,8 @@ public class GroupServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
-        Group group = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
+        Group group = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>() {
+        });
         if (preconditionService.validateGroupAdd(group)) {
             httpService.writeResponse(resp, group, groupService::addGroup, HttpServletResponse.SC_CREATED, HttpServletResponse.SC_BAD_REQUEST);
         } else {
@@ -70,7 +71,8 @@ public class GroupServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         httpService.prepareResponse(resp);
-        List<Student> students = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>(){});
+        List<Student> students = parsingService.parse(httpService.getRequestBody(req), new TypeReference<>() {
+        });
         Group group = groupService.getEntity(httpService.extractUUID(req));
         if (preconditionService.validateGroupUpdate(students, group)) {
             Group updatedGroup = groupService.addStudentsToGroup(students, httpService.extractUUID(req));
