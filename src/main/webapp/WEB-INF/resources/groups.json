@@ -1,0 +1,96 @@
+[
+  {
+    "uuid": "3df8d0cb-e008-4047-89bd-497055a55978",
+    "number": "1337",
+    "students": [
+      {
+        "uuid": "ca4fa865-216c-4f36-a5b1-1e2fdd23a496",
+        "name": "John",
+        "surname": "Doe",
+        "birthDate": "1995-02-13",
+        "phoneNumber": "+7 999 888-77-66"
+      },
+      {
+        "uuid": "57df09fe-9871-42a1-a6b6-25439593d13a",
+        "name": "Rocco",
+        "surname": "Wilson",
+        "birthDate": "1990-08-14",
+        "phoneNumber": "+7 921 875-78-48"
+      },
+      {
+        "uuid": "cb449a57-b0e7-4d55-a161-e53a63beca17",
+        "name": "Lisa",
+        "surname": "Phillips",
+        "birthDate": "2002-12-27",
+        "phoneNumber": "+375 55 513-49-92"
+      },
+      {
+        "uuid": "285a9428-fe44-41f9-b859-2706f84c338e",
+        "name": "Dale",
+        "surname": "May",
+        "birthDate": "2007-07-07",
+        "phoneNumber": "+7 777 777-77-77"
+      }
+    ]
+  },
+  {
+    "uuid": "51c9cafa-b4d3-4fe2-aae2-34fb9bb39c8d",
+    "number": "404",
+    "students": [
+      {
+        "uuid": "ea6310de-e984-41bc-92f6-3a6db4752256",
+        "name": "Jane",
+        "surname": "Doe",
+        "birthDate": "1997-08-26",
+        "phoneNumber": "+7 900 800-70-60"
+      },
+      {
+        "uuid": "bd6eda72-ce7c-43b9-9c9e-94567300f1bd",
+        "name": "Christine",
+        "surname": "Franco",
+        "birthDate": "1987-08-10",
+        "phoneNumber": "+375 47 686-78-48"
+      }
+    ]
+  },
+  {
+    "uuid": "86f0e4fb-c155-44a4-bd79-6705ecdf9266",
+    "number": "166",
+    "students": [
+      {
+        "uuid": "9cb94fbc-d856-4ff2-8228-42499017ecc5",
+        "name": "Grace",
+        "surname": "Conner",
+        "birthDate": "1995-05-05",
+        "phoneNumber": "+7 990 013-74-49"
+      },
+      {
+        "uuid": "9e54d252-6817-40f9-8d7a-6df87b2ce9a5",
+        "name": "Paul",
+        "surname": "Terry",
+        "birthDate": "1990-11-15",
+        "phoneNumber": "+7 842 020-98-45"
+      }
+    ]
+  },
+  {
+    "uuid": "b6710cae-60ed-4946-a770-c30a6f79a9d1",
+    "number": "200",
+    "students": [
+      {
+        "uuid": "e4eee420-b87a-4bb2-b1bc-9b74ccb27aa9",
+        "name": "Bella",
+        "surname": "Murray",
+        "birthDate": "1999-11-15",
+        "phoneNumber": "+7 861 417-34-99"
+      },
+      {
+        "uuid": "c53b4a2f-2fdb-46a6-aa2f-019422bec449",
+        "name": "Cole",
+        "surname": "Montes",
+        "birthDate": "1978-07-04",
+        "phoneNumber": "+7 909 192-21-57"
+      }
+    ]
+  }
+]
